@@ -1,29 +1,25 @@
 from langchain.chains import ConversationChain
 from langchain.memory import ConversationBufferMemory
-from langchain.llms import HuggingFacePipeline
-from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline
-import torch
+from langchain_ollama import OllamaLLM
 
-# Laad het LLaMA-model
-model_name = "openai-community/gpt2"
-tokenizer = AutoTokenizer.from_pretrained(model_name)
-model = AutoModelForCausalLM.from_pretrained(model_name, device_map="auto", torch_dtype=torch.float16)
+# Initialiseer de Ollama LLM met het LLaMA 3.2-model
+llm = OllamaLLM(model="llama3.2:3b")
 
-# Maak een Hugging Face pipeline
-hf_pipeline = pipeline("text-generation", model=model, tokenizer=tokenizer)
-
-# Gebruik LangChain's LLM wrapper
-llm = HuggingFacePipeline(pipeline=hf_pipeline)
-
-# Configureer LangChain met geheugen
+# Configureer het geheugen voor de gespreksgeschiedenis
 memory = ConversationBufferMemory()
+
+# Maak een conversatieketen met het LLM en het geheugen
 conversation = ConversationChain(llm=llm, memory=memory)
 
 # Start een gesprek
-print("Start een gesprek! Typ 'stop' om te stoppen.")
+print("Begin een gesprek met de assistent. Typ 'stop' om te beëindigen.")
 while True:
     user_input = input("Jij: ")
     if user_input.lower() == "stop":
         break
     response = conversation.run(input=user_input)
-    print(f"Assistant: {response}")
+    print(f"Assistent: {response}")
+
+#TODO: Bekijk ConversationBufferWindowMemory or ConversationTokenBufferMemory
+#TODO: De LLM_WithChromaDB.py moet eigen module worden, importeer deze.
+#TODO:    >>> https://python.langchain.com/docs/versions/migrating_memory/conversation_buffer_window_memory/
