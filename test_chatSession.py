@@ -22,4 +22,5 @@ while True:
 
 #TODO: Bekijk ConversationBufferWindowMemory or ConversationTokenBufferMemory
 #TODO: De LLM_WithChromaDB.py moet eigen module worden, importeer deze.
-#TODO:    >>> https://python.langchain.com/docs/versions/migrating_memory/conversation_buffer_window_memory/
+#TODO:    >>> https://python.langchain.com/docs/versions/migrating_memory/conversation_buffer_window_memory
+#TODO:Function calling: https://docs.llama-api.com/essentials/function
