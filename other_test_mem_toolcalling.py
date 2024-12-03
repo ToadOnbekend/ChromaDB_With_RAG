@@ -65,3 +65,11 @@ while True:
 
     else:
       print('No tool calls returned from model')
+
+"""
+  TODO
+messages = [
+    {"role": "system", "content": "Je bent een assistent die altijd blij en enthousiast reageert."},
+    {"role": "user", "content": "Vertel me over het weer vandaag."}
+]
+"""
