@@ -122,6 +122,8 @@ merged_result = merge_multiple_lists_of_texts_with_split(structured_data_combine
 for i in range(len(merged_result)):
     structured_data +=  merged_result[i] + "\n----\n"
 
+
+
 prompt_ollama = (
       f"Je krijgt een set gestructureerde data en een specifieke vraag. "
       f"Analyseer de gegeven data zeer nauwkeurig en gebruik deze, om de vraag te beantwoorden."
