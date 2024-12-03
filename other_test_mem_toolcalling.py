@@ -2,25 +2,7 @@ from ollama import chat
 from ollama import ChatResponse
 from module_ChromaDB_Ask import handle_question
 
-def add_two_numbers(a: int, b: int) -> int:
-  """
-  Add two numbers
 
-  Args:
-    a (int): The first number
-    b (int): The second number
-
-  Returns:
-    int: The sum of the two numbers
-  """
-  return a + b
-
-
-def subtract_two_numbers(a: int, b: int) -> int:
-  """
-  Subtract two numbers
-  """
-  return a - b
 
 def askAboutFiles(question: str) -> str:
     """
@@ -28,22 +10,7 @@ def askAboutFiles(question: str) -> str:
     """
     requered_data = handle_question(question)
     return requered_data
-# Tools can still be manually defined and passed into chat
-subtract_two_numbers_tool = {
-  'type': 'function',
-  'function': {
-    'name': 'subtract_two_numbers',
-    'description': 'Subtract two numbers',
-    'parameters': {
-      'type': 'object',
-      'required': ['a', 'b'],
-      'properties': {
-        'a': {'type': 'integer', 'description': 'The first number'},
-        'b': {'type': 'integer', 'description': 'The second number'},
-      },
-    },
-  },
-}
+
 askAboutFiles_tool = {
   'type': 'function',
   'function': {
@@ -59,11 +26,8 @@ askAboutFiles_tool = {
   },
 }
 messages = []
-# print('Prompt:', messages[0]['content'])
 
 available_functions = {
-  'add_two_numbers': add_two_numbers,
-  'subtract_two_numbers': subtract_two_numbers,
   'askAboutFiles': askAboutFiles
 }
 
@@ -74,7 +38,7 @@ while True:
     response: ChatResponse = chat(
       'llama3.2:3b',
       messages=messages,
-      tools=[add_two_numbers, subtract_two_numbers_tool, askAboutFiles_tool],
+      tools=[askAboutFiles_tool],
     )
 
     if response.message.tool_calls:

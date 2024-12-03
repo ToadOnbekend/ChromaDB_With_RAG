@@ -135,8 +135,8 @@ def handle_question(questionP):
         #       f"Antwoord (IN HET NEDERLANDS!):"
         # )
         #
-f = handle_question("Hi")
-print(f)
+# f = handle_question("Hi")
+# print(f)
 # output = ollama.generate(
 #   model=OLLAMA_MODEL,
 #   prompt= prompt_ollama,
