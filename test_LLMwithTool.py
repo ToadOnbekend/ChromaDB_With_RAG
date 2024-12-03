@@ -1,42 +1,42 @@
-# from langchain_core.messages import AIMessage
-# from langchain_core.tools import tool
-# from langgraph.prebuilt import ToolNode
-# from langchain_ollama import OllamaLLM
-
 import ollama
-OLLAMA_MODEL ="llama3.2:3b"
 
-storage = ""
 
-#  HumanInput: ---
-#  GeneratedOutput: ---
+def add_two_numbers(a: int, b: int) -> int:
+  """
+  Add two numbers
 
-storage = ""
+  Args:
+    a: The first integer number
+    b: The second integer number
 
-# Loop voor voortdurende interactie
-while True:
-    # Vraag om input van de gebruiker
-    prompt_ollama = input("PROMPT: ")
+  Returns:
+    int: The sum of the two numbers
+  """
+  return int(a) + int(b)
 
-    # Voeg de input van de gebruiker toe aan de opslag
-    storage += f"HumanInput: {prompt_ollama}\n"
+def get_random_name() -> str:
+    """
+    Gets a random name
 
-    # Genereer output met Ollama, gebruikmakend van de volledige context
-    output = ollama.generate(
-        model=OLLAMA_MODEL,
-        prompt=(
-            f"Je bent een taalmodel dat de berichtgeschiedenis bewaart.\n"
-            f"De geschiedenis van de interactie tussen jou en de gebruiker staat hieronder:\n"
-            f"Wat jij hebt gezegd, staat onder 'GeneratedOutput', en wat de gebruiker heeft gezegd, staat onder 'HumanInput'.\n"
-            f"Gebruik deze context om eerdere antwoorden en vragen te begrijpen:\n{storage}\n"
-            f"Zet NOOIT: 'GeneratedOutput' en 'HumanInput' in je antwoord"
-            f"Beantwoord de volgende prompt: {prompt_ollama}"
-        ),
-        options={'temperature': 0.5}  # Pas willekeurigheid aan tussen 0.1 (consistent) en 1 (creatief, minder consistent)
-    )
+    Returns:
+     str: random name
+    """
+    return "Henk"
 
-    # Voeg de gegenereerde output toe aan de opslag
-    storage += f"GeneratedOutput: {output['response']}\n"
+response = ollama.chat(
+  'llama3.2:3b',
+  messages=[{'role': 'user', 'content': 'get  a random name'}],
+  tools=[add_two_numbers, get_random_name], # Actual function reference
+)
 
-    # Toon het antwoord van Ollama
-    print("OLLAMA:", output["response"])
+available_functions = {
+  'add_two_numbers': add_two_numbers,
+  'get_random_name': get_random_name
+}
+
+for tool in response.message.tool_calls or []:
+  function_to_call = available_functions.get(tool.function.name)
+  if function_to_call:
+    print('Function output:', function_to_call(**tool.function.arguments))
+  else:
+    print('Function not found:', tool.function.name)
