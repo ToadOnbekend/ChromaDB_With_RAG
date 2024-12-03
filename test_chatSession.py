@@ -29,28 +29,20 @@ def call_model(state: MessagesState):
 workflow.add_edge(START, "model")
 workflow.add_node("model", call_model)
 
-
+thread_id ="0832"
+config = {"configurable": {"thread_id": thread_id}}
 app = workflow.compile(
     checkpointer=memory
 )
-
-THREAD_ID = "172"
-config = {"configurable": {"thread_id": THREAD_ID}}
+# input_message = HumanMessage(content="hi! I'm bob")
+# for event in app.stream({"messages": [input_message]}, config, stream_mode="values"):
+#     event["messages"][-1].pretty_print()
 
 while True:
-    user_input = input("Jij: ")
-    if user_input.lower() == "stop":
-        break
+    message = input(">> ")
 
-    for event in app.stream({"messages": [user_input]}, config, stream_mode="values"):
-       try:
-        print(event["messages"][1].content)
-        print(event)
-       except:
-           pass
+    output_list = []
+    for event in app.stream({"messages": [message]}, config, stream_mode="values"):
+        output_list.insert(0,event["messages"][-1].content)
 
-
-#TODO: Bekijk ConversationBufferWindowMemory or ConversationTokenBufferMemory
-#TODO: De LLM_WithChromaDB.py moet eigen module worden, importeer deze.
-#TODO:    >>> https://python.langchain.com/docs/versions/migrating_memory/conversation_buffer_window_memory
-#TODO:Function calling: https://zilliz.com/blog/function-calling-ollama-llama-3-milvus
+    print(output_list[0])
