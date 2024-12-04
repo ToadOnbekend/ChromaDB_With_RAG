@@ -3,6 +3,7 @@ from ollama import ChatResponse
 from module_ChromaDB_Ask import handle_question
 
 
+orientatie_q = ""
 
 def askAboutFiles(question: str) -> str:
     """
@@ -11,24 +12,50 @@ def askAboutFiles(question: str) -> str:
     requered_data = handle_question(question)
     return requered_data
 
-askAboutFiles_tool = {
-  'type': 'function',
-  'function': {
-    'name': 'askAboutFiles',
-    'description': 'Bevraag de bestanden om de vraag van de gebruiker te beantwoorden',
-    'parameters': {
-      'type': 'object',
-      'required': ['question'],
-      'properties': {
-        'question': {'type': 'str', 'description': 'De vraag voor de bestanden'}
-      },
-    },
-  },
+def dont_query(x):
+    """
+    Wanneer uit de prompt blijkt dat de bestanden bevragen niet nodig is of niet relevant is
+    """
+    return x
+
+askAboutFiles_tool ={
+        'type': 'function',
+        'function': {
+           'name': 'askAboutFiles',
+           'description': 'Bevraag de bestanden om de vraag van de gebruiker te beantwoorden',
+                 'parameters': {
+                     'type': 'object',
+                     'required': ['question'],
+                     'properties': {
+                     'question': {'type': 'str', 'description': 'De vraag voor de bestanden'}
+         },
+        },
+     },
 }
-messages = []
+dont_query_tool = {
+        'type':'function',
+        'function':{
+            'name':'dont_query',
+            'description': 'Bevraag niet de bestanden, als de prompt niet met school zaken te maken heeft of vraagt naar het Ashram',
+                'parameters':{
+                    'type':'object',
+                    'required':['x'],
+                    'properties':{
+                        'x':{'type':'str', 'description': 'De vraag zonder bestanden'}
+                    }
+                }
+
+        }
+
+    }
+messages = [
+    {"role": "system", "content": "Je bent behulpzaam. Je hebt 2 opties wanneer de gebruiker een vraag heeft. De bestanden bevragen of niet de bestanden bevragen. Als de vraag , ander niet"},
+    {"role": "user", "content": "Hoi"}
+]
 
 available_functions = {
-  'askAboutFiles': askAboutFiles
+  'askAboutFiles': askAboutFiles,
+  'dont_query':dont_query
 }
 
 while True:
@@ -38,7 +65,7 @@ while True:
     response: ChatResponse = chat(
       'llama3.2:3b',
       messages=messages,
-      tools=[askAboutFiles_tool],
+      tools=[askAboutFiles_tool, dont_query_tool],
     )
 
     if response.message.tool_calls:
@@ -57,6 +84,7 @@ while True:
     if response.message.tool_calls:
       # Add the function response to messages for the model to use
       messages.append(response.message)
+
       messages.append({'role': 'tool', 'content': str(output), 'name': tool.function.name})
 
       # Get final response from model with function outputs

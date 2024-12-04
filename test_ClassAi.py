@@ -133,7 +133,7 @@ class AIchatAgent():
 
 llamaA = AIchatAgent(available_functions, [add_two_numbers, get_random_name], MODEL)
 
-awns = llamaA.chat("ik heet Jhon")
+awns = llamaA.chat("5+5 en 3+2")
 print(awns)
 print("---------------------")
 llamaA.chat("hoe heet ik?")
