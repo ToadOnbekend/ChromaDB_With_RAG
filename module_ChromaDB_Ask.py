@@ -18,15 +18,18 @@ CHUNK_OVERLAP = 10 #Houd hetzelfde als bij "LoadInChromaDB.py"
 OLLAMA_MODEL ="llama3.2:3b" #TODO: !!Runt ollama? Open ollama app.
 #Installer met ollama "run llama3.2:3b", in CMD
 LOAD_MODEL_LOCAL = True #Als je model lokaal is, zet op True. Dus voor het eerst op False!!
+client = chromadb.Client()
+chroma_client = chromadb.PersistentClient(path=PATH_ChromaDB)
+
+sentence_transformer_ef = sentence_transformer_ef = embedding_functions.SentenceTransformerEmbeddingFunction(
+    model_name=MODEL_EMBEDDING, device='cuda', trust_remote_code=True, truncate_dim=EMBEDDING_DEMENSIONS,
+    local_files_only=LOAD_MODEL_LOCAL)
+collection = chroma_client.get_collection(name=COLLECTION_NAME, embedding_function=sentence_transformer_ef)
+model = AutoModelForSequenceClassification.from_pretrained(RERANKER_MODEL, torch_dtype="auto", trust_remote_code=True,
+                                                           local_files_only=LOAD_MODEL_LOCAL)
+model.to('cuda') # ⇐ ALS op CPU, haal deze regel weg
 
 def handle_question(questionP):
-        client = chromadb.Client()
-        chroma_client = chromadb.PersistentClient(path=PATH_ChromaDB)
-
-        sentence_transformer_ef = sentence_transformer_ef = embedding_functions.SentenceTransformerEmbeddingFunction(model_name=MODEL_EMBEDDING,device='cuda',trust_remote_code=True,truncate_dim = EMBEDDING_DEMENSIONS, local_files_only = LOAD_MODEL_LOCAL)
-        collection = chroma_client.get_collection(name=COLLECTION_NAME, embedding_function=sentence_transformer_ef)
-        model = AutoModelForSequenceClassification.from_pretrained(RERANKER_MODEL,torch_dtype="auto",trust_remote_code=True, local_files_only = LOAD_MODEL_LOCAL)
-        model.to('cuda') # ⇐ ALS op CPU, haal deze regel weg
 
         def remove_dubble(lijst):
           unieke_items = []
