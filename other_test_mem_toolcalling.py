@@ -7,7 +7,7 @@
 # from Module_Query import handle_question
 #
 # orientatie_q = ""
-#
+# TODO, Zet naar 1 query niet meerdere.
 # def askAboutFiles(questions: list) -> str:
 #     """
 #     Gebruik de bestanden om de vraag (vragen) van de gebruiker te beantwoorden
