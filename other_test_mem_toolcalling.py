@@ -7,50 +7,69 @@ orientatie_q = ""
 
 def askAboutFiles(question: str) -> str:
     """
-    Gebruik de geuploade pdf om het antwoord van de gebruiker te beantwoorden
+    gebruik de query voor het beantwoordne van de vraag
     """
     requered_data = handle_question([question])
     return requered_data
 
 def dont_query(x):
     """
-    Wanneer uit de prompt blijkt dat de bestanden bevragen niet nodig is of niet relevant is
+    gebruik niet de query om de vraag te beantwoorden
     """
     return x
 
-askAboutFiles_tool ={
-        'type': 'function',
-        'function': {
-           'name': 'askAboutFiles',
-           'description': 'Bevraag de bestanden om de vraag van de gebruiker te beantwoorden',
-                 'parameters': {
-                     'type': 'object',
-                     'required': ['question'],
-                     'properties': {
-                     'question': {'type': 'str', 'description': 'De vraag voor de bestanden'}
-         },
+
+def remove_tool_messages(messages):
+    cleaned_messages = []
+    for message in messages:
+        if message.get('role') == 'tool':
+            message['content'] = ""
+            cleaned_messages.append(message)
+        else:
+            cleaned_messages.append(message)
+    return cleaned_messages
+
+
+askAboutFiles_tool = {
+    'type': 'function',
+    'function': {
+        'name': 'askAboutFiles',
+        'description': '',#'Bevraag de bestanden om de vraag van de gebruiker te beantwoorden',
+        'parameters': {
+            'type': 'object',
+            'required': ['question'],
+            'properties': {
+                'question': {'type': 'string', 'description': 'beantwoord de vraag met de query'}
+            },
         },
-     },
+    },
 }
+
 dont_query_tool = {
-        'type':'function',
-        'function':{
-            'name':'dont_query',
-            'description': 'Bevraag niet de bestanden, als de prompt niet met school zaken te maken heeft of vraagt naar het Ashram',
-                'parameters':{
-                    'type':'object',
-                    'required':['x'],
-                    'properties':{
-                        'x':{'type':'str', 'description': 'De vraag zonder bestanden'}
-                    }
-                }
+    'type': 'function',
+    'function': {
+        'name': 'dont_query',
+        'description': '',#'Bevraag niet de bestanden als de prompt niet met schoolzaken te maken heeft of niet gerelateerd is aan het Ashram College',
+        'parameters': {
+            'type': 'object',
+            'required': ['x'],
+            'properties': {
+                'x': {'type': 'string', 'description': 'beantwoord niet de vraag met de query'}
+            },
+        },
+    },
+}
 
-        }
-
-    }
 messages = [
-    {"role": "system", "content": "Je bent behulpzaam. Je hebt 2 opties wanneer de gebruiker een vraag heeft. De bestanden bevragen of niet de bestanden bevragen. Als de vraag , ander niet"}
+    {
+        "role": "system",
+        "content": (
+                f"Query ALTIJD wat de vraag ook is. Geef een hulpvol antwoord die de vraag van de gebruiker uitgebreid beantwoord."
+        )
+    }
 ]
+
+
 
 available_functions = {
   'askAboutFiles': askAboutFiles,
@@ -82,13 +101,15 @@ while True:
     # Only needed to chat with the model using the tool call results
     if response.message.tool_calls:
       # Add the function response to messages for the model to use
-      messages.append(response.message)
 
-      messages.append({'role': 'tool', 'content': str(output), 'name': tool.function.name})
+     messages.append({'role': 'tool', 'content': str(output), 'name': tool.function.name})
 
       # Get final response from model with function outputs
+      print("Messages:",messages)
       final_response = chat('llama3.2:3b', messages=messages)
-      print('Final response:', final_response.message.content)
+      messages = remove_tool_messages(messages)
+      print('\n\033[34m' +str(final_response.message.content)+"\033[0m")
+      messages.append({'role': 'assistant', 'content': final_response.message.content})
 
     else:
       print('No tool calls returned from model')

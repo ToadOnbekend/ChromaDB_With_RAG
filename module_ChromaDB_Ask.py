@@ -1,5 +1,4 @@
-@@
-import ollama
+#import ollama
 import chromadb
 from chromadb.utils import embedding_functions
 from transformers import AutoModelForSequenceClassification
@@ -19,28 +18,32 @@ OLLAMA_MODEL ="llama3.2:3b" #TODO: !!Runt ollama? Open ollama app.
 LOAD_MODEL_LOCAL = True #Als je model lokaal is, zet op True. Dus voor het eerst op False!!
 client = chromadb.Client()
 chroma_client = chromadb.PersistentClient(path=PATH_ChromaDB)
-sentence_transformer_ef = sentence_transformer_ef = embedding_functions.SentenceTransformerEmbeddingFunction(
+sentence_transformer_ef = embedding_functions.SentenceTransformerEmbeddingFunction(
     model_name=MODEL_EMBEDDING, device='cuda', trust_remote_code=True, truncate_dim=EMBEDDING_DEMENSIONS,
     local_files_only=LOAD_MODEL_LOCAL)
 collection = chroma_client.get_collection(name=COLLECTION_NAME, embedding_function=sentence_transformer_ef)
 model = AutoModelForSequenceClassification.from_pretrained(RERANKER_MODEL, torch_dtype="auto", trust_remote_code=True,
                                                            local_files_only=LOAD_MODEL_LOCAL)
 model.to('cuda') # ⇐ ALS op CPU, haal deze regel weg
+
 def remove_dubble(lijst):
     unieke_items = []
     for item in lijst:
         if item not in unieke_items:
             unieke_items.append(item)
     return unieke_items
+
 def truncate_sentence(sentence):
     words = sentence
     if len(words) > 999999999:
         return ''.join(words[:7]) + ".."
     else:
         return ''.join(words)
+
 def extract_years(filename):
     match = re.search(r'(\d{4}(?:_\d{4})?)', filename)
     return match.group(1) if match else "Not Given"
+
 def merge_multiple_lists_of_texts_with_split(text_lists):
     def find_exact_overlap(words1, words2, overlap_size=CHUNK_OVERLAP):
         if len(words1) >= overlap_size and len(words2) >= overlap_size:
@@ -72,6 +75,7 @@ def merge_multiple_lists_of_texts_with_split(text_lists):
             merged_words += all_texts[current_group[i]]["words"][overlap:]
         merged_groups.append(" ".join(merged_words))
     return merged_groups
+
 def handle_question(questionS):
         vragen = ""
         responds_return = "\n"
@@ -113,6 +117,7 @@ def handle_question(questionS):
                 merged_result = merge_multiple_lists_of_texts_with_split(structured_data_combine)
                 for i in range(len(merged_result)):
                     responds_return +=  merged_result[i] + "\n----\n"
+
                 if len_q > 1 and i != len_q :
                     responds_return += "\n\n"
                 to_rerank_inhoud = []; add = []; structured_data_combine = []
