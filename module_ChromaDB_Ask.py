@@ -84,7 +84,7 @@ def handle_question(questionS):
         for i in range(len(questionS)):
                 questionP = questionS[i]
                 vragen += questionP + "? "
-                responds_return +="Vraag van gebruiker: "+questionP +"\nBenodigde bestanden om de vraag te beantwoorden:\n\n"
+                responds_return +="Vraag van gebruiker: "+questionP +"\nBijhorende bestanden:\n\n"
                 results = collection.query(
                   query_texts=questionP,
                   n_results=N_RESULTS_QUERY,
@@ -122,5 +122,5 @@ def handle_question(questionS):
                     responds_return += "\n\n"
                 to_rerank_inhoud = []; add = []; structured_data_combine = []
         #print(responds_return)
-        responds_return += f"Gebruik deze bestanden om de vragen van de gebruikder te beantwoorden: {vragen}"
+        responds_return += f"Gebruik deze bestanden om de prompt van de gebruiker te beantwoorden: {vragen}"#\nBedenk altijd of de prompt de bestanden nodig heeft, bijvoorbeeld een conversationele prompt of bij een statement. Gebruik dan absoluut NIET de behorende bestanden!"
         return responds_return

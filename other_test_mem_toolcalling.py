@@ -5,17 +5,11 @@ from module_ChromaDB_Ask import handle_question
 
 orientatie_q = ""
 
-def askAboutFiles(question: str) -> str:
-    """
-    gebruik de query voor het beantwoordne van de vraag
-    """
+def query(question: str) -> str:
     requered_data = handle_question([question])
     return requered_data
 
 def dont_query(x):
-    """
-    gebruik niet de query om de vraag te beantwoorden
-    """
     return x
 
 
@@ -33,13 +27,13 @@ def remove_tool_messages(messages):
 askAboutFiles_tool = {
     'type': 'function',
     'function': {
-        'name': 'askAboutFiles',
-        'description': '',#'Bevraag de bestanden om de vraag van de gebruiker te beantwoorden',
+        'name': 'query',
+        'description': "Gebruik deze functie ALTIJD, ongeacht de prompt van de gebruiker",#'Deze functie geeft de benodigde externe informatie om de vraag te beantwoorden',
         'parameters': {
             'type': 'object',
             'required': ['question'],
             'properties': {
-                'question': {'type': 'string', 'description': 'beantwoord de vraag met de query'}
+                'question': {'type': 'string', 'description': 'De prompt van de gebruiker'}
             },
         },
     },
@@ -49,41 +43,47 @@ dont_query_tool = {
     'type': 'function',
     'function': {
         'name': 'dont_query',
-        'description': '',#'Bevraag niet de bestanden als de prompt niet met schoolzaken te maken heeft of niet gerelateerd is aan het Ashram College',
+        'description': 'Deze functie gebruikt GEEN externe informatie',
         'parameters': {
             'type': 'object',
             'required': ['x'],
             'properties': {
-                'x': {'type': 'string', 'description': 'beantwoord niet de vraag met de query'}
+                'x': {'type': 'string', 'description': 'De vraag van de gebruiker die met de interne informatie moet worden beantwoord.'}
             },
         },
     },
 }
 
+
 messages = [
     {
         "role": "system",
         "content": (
-                f"Query ALTIJD wat de vraag ook is. Geef een hulpvol antwoord die de vraag van de gebruiker uitgebreid beantwoord."
+            "Je bent een behulpzame ai assistente. Geef uitgebreid antwoord. Gebruik ALTIJD de query-functie, ONGEACHT de prompt van de gebruiker. Verander de prompt(vraag/vragen) van de gebruiker NOOIT!"
         )
     }
 ]
 
 
 
+
+
+
 available_functions = {
-  'askAboutFiles': askAboutFiles,
-  'dont_query':dont_query
+  'query': query,
+  # 'dont_query':dont_query
 }
 
 while True:
     content = input(">> ")
+    content += "\nGebruik de query-functie!"
+    output = ""
 
     messages.append({'role': 'user', 'content': content})
     response: ChatResponse = chat(
       'llama3.2:3b',
       messages=messages,
-      tools=[askAboutFiles_tool, dont_query_tool],
+      tools=[askAboutFiles_tool]#dont_query_tool],
     )
 
     if response.message.tool_calls:
@@ -102,9 +102,8 @@ while True:
     if response.message.tool_calls:
       # Add the function response to messages for the model to use
 
-     messages.append({'role': 'tool', 'content': str(output), 'name': tool.function.name})
+      messages.append({'role': 'tool', 'content': str(output), 'name': tool.function.name})
 
-      # Get final response from model with function outputs
       print("Messages:",messages)
       final_response = chat('llama3.2:3b', messages=messages)
       messages = remove_tool_messages(messages)
@@ -112,7 +111,10 @@ while True:
       messages.append({'role': 'assistant', 'content': final_response.message.content})
 
     else:
-      print('No tool calls returned from model')
+        final_response = chat('llama3.2:3b', messages=messages)
+        #messages = remove_tool_messages(messages)
+        print('\n\033[34m' + str(final_response.message.content) + "\033[0m")
+        messages.append({'role': 'assistant', 'content': final_response.message.content})
 
 """
   TODO
