@@ -1,12 +1,22 @@
 from ollama import chat
 from ollama import ChatResponse
 from module_ChromaDB_Ask import handle_question
-
+import ast
 
 orientatie_q = ""
 
-def query(question: str) -> str:
-    requered_data = handle_question([question])
+def string_to_list(input_string):
+    return ast.literal_eval(input_string)
+
+def query(question: list) -> str:
+    print(type(question), ":: \033[35mTYPE\033[0m")
+    print(len(question), ":: \033[35mLEN\033[0m")
+    print(question,":: \033[35mCONTENT\033[0m")
+
+    if type(question) == str:
+       question = string_to_list(question)
+
+    requered_data = handle_question(question)
     return requered_data
 
 def dont_query(x):
@@ -33,7 +43,7 @@ askAboutFiles_tool = {
             'type': 'object',
             'required': ['question'],
             'properties': {
-                'question': {'type': 'string', 'description': 'De prompt van de gebruiker'}
+                'question': {'type': 'list', 'description': 'De prompt met enkel de vraag(vragen) van de gebruiker. Neem de vragen van de gebruiker EXCACT over! Verander de vragen NIET! '}
             },
         },
     },
@@ -53,7 +63,6 @@ dont_query_tool = {
         },
     },
 }
-
 
 messages = [
     {
@@ -76,7 +85,6 @@ available_functions = {
 
 while True:
     content = input(">> ")
-    content += "\nGebruik de query-functie!"
     output = ""
 
     messages.append({'role': 'user', 'content': content})
