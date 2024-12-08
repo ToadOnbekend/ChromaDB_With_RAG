@@ -8,15 +8,15 @@ orientatie_q = ""
 def string_to_list(input_string):
     return ast.literal_eval(input_string)
 
-def query(question: list) -> str:
-    print(type(question), ":: \033[35mTYPE\033[0m")
-    print(len(question), ":: \033[35mLEN\033[0m")
-    print(question,":: \033[35mCONTENT\033[0m")
+def query(question: str) -> str:
+    # print(type(question), ":: \033[35mTYPE\033[0m")
+    # print(len(question), ":: \033[35mLEN\033[0m")
+    # print(question,":: \033[35mCONTENT\033[0m")
+    #
+    # if type(question) == str:
+    #    question = string_to_list(question)
 
-    if type(question) == str:
-       question = string_to_list(question)
-
-    requered_data = handle_question(question)
+    requered_data = handle_question([question])
     return requered_data
 
 def dont_query(x):
@@ -43,7 +43,7 @@ askAboutFiles_tool = {
             'type': 'object',
             'required': ['question'],
             'properties': {
-                'question': {'type': 'list', 'description': 'De prompt met enkel de vraag(vragen) van de gebruiker. Neem de vragen van de gebruiker EXCACT over! Verander de vragen NIET! '}
+                'question': {'type': 'str', 'description': 'De prompt met enkel de vraag van de gebruiker. Neem de vraag van de gebruiker EXACT over! Verander de vraag NIET! '}
             },
         },
     },
@@ -68,7 +68,7 @@ messages = [
     {
         "role": "system",
         "content": (
-            "Je bent een behulpzame ai assistente. Geef uitgebreid antwoord. Gebruik ALTIJD de query-functie, ONGEACHT de prompt van de gebruiker. Verander de prompt(vraag/vragen) van de gebruiker NOOIT!"
+            "Je bent een behulpzame ai assistente. Geef uitgebreid antwoord. Gebruik ALTIJD de query-functie, ONGEACHT de prompt van de gebruiker. Verander de prompt van de gebruiker NOOIT!"
         )
     }
 ]
