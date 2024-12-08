@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<!-- Alles scripts MOETEN in de <body> -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Socket.IO Example</title>
+    <link href="static/css/styles.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.socket.io/4.5.0/socket.io.min.js"></script>
+</head>
+<body>
+    <script src="static\\js\\script.js"></script>
+    <h1>CHAT</h1>
+
+    <input  id="textInput" placeholder="Typ iets..." />
+    <button id="sendButton" onclick="SendMsg()">Stuur</button>
+    <input type="file" id="fileInput" multiple>
+    <button id="uploadButton" onclick="UploadFiles()">Upload</button>
+    <ul id="messages"></ul>
+
+</body>
+</html>
