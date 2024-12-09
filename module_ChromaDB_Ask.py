@@ -16,15 +16,28 @@ CHUNK_OVERLAP = 10 #Houd hetzelfde als bij "LoadInChromaDB.py"
 OLLAMA_MODEL ="llama3.2:3b" #TODO: !!Runt ollama? Open ollama app.
 #Installer met ollama "run llama3.2:3b", in CMD
 LOAD_MODEL_LOCAL = True #Als je model lokaal is, zet op True. Dus voor het eerst op False!!
+
+
 client = chromadb.Client()
-chroma_client = chromadb.PersistentClient(path=PATH_ChromaDB)
-sentence_transformer_ef = embedding_functions.SentenceTransformerEmbeddingFunction(
-    model_name=MODEL_EMBEDDING, device='cuda', trust_remote_code=True, truncate_dim=EMBEDDING_DEMENSIONS,
-    local_files_only=LOAD_MODEL_LOCAL)
-collection = chroma_client.get_collection(name=COLLECTION_NAME, embedding_function=sentence_transformer_ef)
-model = AutoModelForSequenceClassification.from_pretrained(RERANKER_MODEL, torch_dtype="auto", trust_remote_code=True,
-                                                           local_files_only=LOAD_MODEL_LOCAL)
-model.to('cuda') # ⇐ ALS op CPU, haal deze regel weg
+
+chroma_client = ""
+sentence_transformer_ef = ""
+collection = ""
+model = ""
+def initializeModelAndDatabase(pathChromaDB, collectionNameV):
+    global chroma_client, sentence_transformer_ef, collection, model
+    print("\033[36mInitializing...\033[0m")
+    chroma_client = chromadb.PersistentClient(path=pathChromaDB)
+    sentence_transformer_ef = embedding_functions.SentenceTransformerEmbeddingFunction(
+        model_name=MODEL_EMBEDDING, device=PROCESS_DEVICE, trust_remote_code=True, truncate_dim=EMBEDDING_DEMENSIONS,
+        local_files_only=LOAD_MODEL_LOCAL)
+    collection = chroma_client.get_collection(name=collectionNameV, embedding_function=sentence_transformer_ef)
+    model = AutoModelForSequenceClassification.from_pretrained(RERANKER_MODEL, torch_dtype="auto", trust_remote_code=True,
+                                                               local_files_only=LOAD_MODEL_LOCAL)
+    if PROCESS_DEVICE == "cuda":
+        model.to('cuda') # ⇐ ALS op CPU, haal deze regel weg
+
+
 
 def remove_dubble(lijst):
     unieke_items = []
@@ -124,3 +137,8 @@ def handle_question(questionS):
         #print(responds_return)
         responds_return += f"Gebruik deze bestanden om de prompt van de gebruiker te beantwoorden: {vragen}"#\nBedenk altijd of de prompt de bestanden nodig heeft, bijvoorbeeld een conversationele prompt of bij een statement. Gebruik dan absoluut NIET de behorende bestanden!"
         return responds_return
+
+# initializeModelAndDatabase("ChromaVectorDB", "Collection")
+# result = handle_question(["wat is het rookbeleid?"])
+#
+# print(result)

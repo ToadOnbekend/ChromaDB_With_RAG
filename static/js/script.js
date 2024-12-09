@@ -39,6 +39,7 @@ function UploadFiles(){
                 reader.readAsArrayBuffer(file); // Lees het bestand als arraybuffer
             }
             fileInput.value = '';
+            socket.emit("LoadInVectorDB", {message: 'Upload'})
 }
 
 socket.on('ReceivedRequest', (data) => {
