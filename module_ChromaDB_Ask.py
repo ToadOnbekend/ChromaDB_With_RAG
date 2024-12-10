@@ -138,7 +138,7 @@ def handle_question(questionS):
         responds_return += f"Gebruik deze bestanden om de prompt van de gebruiker te beantwoorden: {vragen}"#\nBedenk altijd of de prompt de bestanden nodig heeft, bijvoorbeeld een conversationele prompt of bij een statement. Gebruik dan absoluut NIET de behorende bestanden!"
         return responds_return
 
-# initializeModelAndDatabase("ChromaVectorDB", "Collection")
-# result = handle_question(["wat is het rookbeleid?"])
-#
-# print(result)
+initializeModelAndDatabase("ChromaVectorDB", "Collection")
+result = handle_question(["wat staat er in de bestanden"])
+
+print(result)

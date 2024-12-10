@@ -4,6 +4,7 @@ from moduleToolCalling import questionRAG
 from moduleLoadInChromaDB import loadPDFVectorDB
 from module_ChromaDB_Ask import initializeModelAndDatabase
 import os
+import shutil
 app = Flask(__name__)
 socketio = SocketIO(app)
 
@@ -12,7 +13,7 @@ socketio = SocketIO(app)
 # TODO: Vergeet NIET. Dit moet in juiste class komen. Dit is tijdelijk
 FOLDERPdf = "tempTestUpload"
 VECTOR_DATABASE_FOLDER = "VectorDBStoreFolder"
-NAME_VectorDB = "T1"
+NAME_VectorDB = "Tt1"
 NAME_Collection = "STO"
 @app.route('/')
 def index():
@@ -48,6 +49,12 @@ def LoadPDF_TO_VectorDB(data):
         try:
             initializeModelAndDatabase(VECTOR_DATABASE_FOLDER+"\\"+NAME_VectorDB, NAME_Collection)
             socketio.emit("ReceivedRequest", {"message": "inintialized!"})
+            for filename in os.listdir(FOLDERPdf):
+                file_path = os.path.join(FOLDERPdf, filename)
+                if os.path.isfile(file_path):
+                    os.remove(file_path)
+                    print(f"Bestand verwijderd: {file_path}")
+
         except:
             socketio.emit("ReceivedRequest", {"message": "Failed at initializing Retriever Module"})
 

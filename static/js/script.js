@@ -5,8 +5,10 @@ const socket = io();
 
 
 function SendMsg() {
-    const input = document.getElementById('textInput');
-    const message = input.value;
+    // const input = document.getElementById('chat-input');
+    // const message = input.value;
+    const input = document.getElementById('chat-input');
+    const message = input.textContent.trim();
                 // Stuur de invoerwaarde naar de server
     socket.emit('askLLM', { text: message });
         input.value = ''; // Leeg het tekstveld na het verzenden

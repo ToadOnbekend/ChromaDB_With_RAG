@@ -12,11 +12,14 @@
     <script src="static\\js\\script.js"></script>
     <h1>CHAT</h1>
 
-    <input  id="textInput" placeholder="Typ iets..." />
-    <button id="sendButton" onclick="SendMsg()">Stuur</button>
-    <input type="file" id="fileInput" multiple>
-    <button id="uploadButton" onclick="UploadFiles()">Upload</button>
     <ul id="messages"></ul>
 
+        <input type="file" id="fileInput" multiple>
+        <button id="uploadButton" onclick="UploadFiles()">Upload</button>
+    <div class="chatInput">
+       <!-- <input id="textInput" placeholder="Typ iets..." /> -->
+        <div id="chat-input" contenteditable="true" data-placeholder="Begin typing...">Hoi</div>
+        <button id="sendButton" onclick="SendMsg()">Stuur</button>
+    </div>
 </body>
 </html>

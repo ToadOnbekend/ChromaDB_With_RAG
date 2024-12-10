@@ -1,9 +1,60 @@
-#textInput{
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
 
 }
+
+h1 {
+    text-align: center;
+    margin-top: 0;
+}
+
+#messages {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 10px;
+    list-style-type: none;
+}
+
+/*#textInput,*/
+/*#sendButton,*/
+/*#fileInput,*/
+/*#uploadButton {*/
+/*    margin: 5px;*/
+/*}*/
+
+.chatInput {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+/*#textInput{*/
+/*    background-color: red;*/
+/*    border: none;*/
+/*    width: 80%;*/
+/*}*/
+
 #sendButton{
-    padding: 20px;
+    border: red solid 2px;
 }
+#chat-input {
+    min-height: 100px; /* Zorgt voor voldoende ruimte om te typen */
+    background-color: #ff5959;
+    color: black; /* Tekstkleur voor goede leesbaarheid */
+    padding: 10px; /* Ruimte rondom de tekst */
+    margin: 10px 0; /* Marges boven en onder voor ruimtelijke scheiding */
+    margin-left: 45px;
+    outline: none; /* Verwijdert de standaard focus rand */
+    white-space: pre-wrap; /* Behoudt witruimte en regelafbrekingen */
+    /*overflow-y: auto; !* Maakt scrollen mogelijk als de inhoud te lang is *!*/
+    font-size:35px;
+    width: 50%;
+    word-wrap: break-word;
+        overflow-y: auto;
+    max-height: 100px;
+    box-sizing: border-box;
 
-#uploadButton{
 }
