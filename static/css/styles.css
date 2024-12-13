@@ -4,12 +4,35 @@ body {
     display: flex;
     flex-direction: column;
     height: 100vh;
-
 }
+
+
+
+@font-face {
+    font-family: 'DinNext';
+    src: url('/static/fonts/dinnextw1g_bold.otf');
+    font-weight: 700; /* Vet gewicht */
+    font-style: normal;
+}
+@font-face {
+    font-family: 'DinNext';
+    src: url('/static/fonts/dinnextw1g_light.otf');
+    font-weight: 100; /* Vet gewicht */
+    font-style: normal;
+}
+@font-face {
+    font-family: 'DinNext';
+    src: url('/static/fonts/dinnextw1g_medium.otf');
+    font-weight: 500; /* Vet gewicht */
+    font-style: normal;
+}
+
 
 h1 {
     text-align: center;
     margin-top: 0;
+    font-family: DinNext;
+    font-weight: 700;
 }
 
 #messages {
@@ -41,20 +64,24 @@ h1 {
     border: red solid 2px;
 }
 #chat-input {
-    min-height: 100px; /* Zorgt voor voldoende ruimte om te typen */
-    background-color: #ff5959;
+    min-height: 45px; /* Zorgt voor voldoende ruimte om te typen */
+    /*background-color: rgba(255, 74, 74, 0.2);*/
+        border: #000000 2px solid;
     color: black; /* Tekstkleur voor goede leesbaarheid */
-    padding: 10px; /* Ruimte rondom de tekst */
+    padding-top: 4px;
+    padding-left:12px; /* Ruimte rondom de tekst */
     margin: 10px 0; /* Marges boven en onder voor ruimtelijke scheiding */
     margin-left: 45px;
     outline: none; /* Verwijdert de standaard focus rand */
     white-space: pre-wrap; /* Behoudt witruimte en regelafbrekingen */
     /*overflow-y: auto; !* Maakt scrollen mogelijk als de inhoud te lang is *!*/
-    font-size:35px;
+    font-size:16px;
     width: 50%;
     word-wrap: break-word;
         overflow-y: auto;
-    max-height: 100px;
+    max-height: 45px;
     box-sizing: border-box;
+    font-family: DinNext;
+    font-weight: 100;
 
 }
