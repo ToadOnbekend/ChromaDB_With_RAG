@@ -37,7 +37,8 @@ def initializeModelAndDatabase(pathChromaDB, collectionNameV):
     if PROCESS_DEVICE == "cuda":
         model.to('cuda') # ⇐ ALS op CPU, haal deze regel weg
 
-
+# TODO: Agentic RAG
+# TODO: Samenvatting maken, ook per bestand
 
 def remove_dubble(lijst):
     unieke_items = []
@@ -89,7 +90,7 @@ def merge_multiple_lists_of_texts_with_split(text_lists):
         merged_groups.append(" ".join(merged_words))
     return merged_groups
 
-def handle_question(questionS):
+def handle_question(questionS, q_user_p):
         vragen = ""
         responds_return = "\n"
         len_q = len(questionS)
@@ -135,10 +136,10 @@ def handle_question(questionS):
                     responds_return += "\n\n"
                 to_rerank_inhoud = []; add = []; structured_data_combine = []
         #print(responds_return)
-        responds_return += f"Gebruik deze bestanden om de prompt van de gebruiker te beantwoorden: {vragen}"#\nBedenk altijd of de prompt de bestanden nodig heeft, bijvoorbeeld een conversationele prompt of bij een statement. Gebruik dan absoluut NIET de behorende bestanden!"
+        responds_return += f"Gebruik deze bestanden om de vraag(vragen van de gebruiker te beantwoorden {"? ".join(q_user_p)}"#\nBedenk altijd of de prompt de bestanden nodig heeft, bijvoorbeeld een conversationele prompt of bij een statement. Gebruik dan absoluut NIET de behorende bestanden!"
         return responds_return
 
 initializeModelAndDatabase("ChromaVectorDB", "Collection")
-result = handle_question(["wat staat er in de bestanden"])
-
-print(result)
+# result = handle_question(["wat staat er in de bestanden"])
+#
+# print(result)
