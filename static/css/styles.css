@@ -33,6 +33,7 @@ h1 {
     margin-top: 0;
     font-family: DinNext;
     font-weight: 700;
+    font-size: 60px;
 }
 
 #messages {
@@ -61,7 +62,10 @@ h1 {
 /*}*/
 
 #sendButton{
-    border: red solid 2px;
+    border: black solid 2px;
+    height: 45px;
+    margin-left: 5px;
+    background-color: #8eff6f;
 }
 #chat-input {
     min-height: 45px; /* Zorgt voor voldoende ruimte om te typen */

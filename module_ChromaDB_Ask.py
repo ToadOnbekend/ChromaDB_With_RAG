@@ -18,6 +18,8 @@ OLLAMA_MODEL ="llama3.2:3b" #TODO: !!Runt ollama? Open ollama app.
 LOAD_MODEL_LOCAL = True #Als je model lokaal is, zet op True. Dus voor het eerst op False!!
 
 
+#TODO: PAS AAN NAAR "query_questions" per gegeven bestanden!!!
+
 client = chromadb.Client()
 
 chroma_client = ""
@@ -136,7 +138,7 @@ def handle_question(questionS, q_user_p):
                     responds_return += "\n\n"
                 to_rerank_inhoud = []; add = []; structured_data_combine = []
         #print(responds_return)
-        responds_return += f"Gebruik deze bestanden om de vraag(vragen van de gebruiker te beantwoorden {"? ".join(q_user_p)}"#\nBedenk altijd of de prompt de bestanden nodig heeft, bijvoorbeeld een conversationele prompt of bij een statement. Gebruik dan absoluut NIET de behorende bestanden!"
+        responds_return += f"Gebruik deze bestanden om de vraag(vragen) van de gebruiker te beantwoorden {"? ".join(q_user_p)}"#\nBedenk altijd of de prompt de bestanden nodig heeft, bijvoorbeeld een conversationele prompt of bij een statement. Gebruik dan absoluut NIET de behorende bestanden!"
         return responds_return
 
 initializeModelAndDatabase("ChromaVectorDB", "Collection")

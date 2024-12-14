@@ -1,7 +1,12 @@
 // app.js
 
 // Connect to the server
-const socket = io();
+// const socket = io();
+// Client-side code
+const socket = io("http:192.168.2.69:5000", {
+    transports: ["websocket"], // Forceer WebSocket als transport
+    secure: false,             // Zorg dat het geen HTTPS probeert
+});
 
 
 function SendMsg() {
