@@ -6,11 +6,12 @@ from module_ChromaDB_Ask import initializeModelAndDatabase
 import os
 import shutil
 app = Flask(__name__)
-socketio = SocketIO(app)
+socketio = SocketIO(app, cors_allowed_origins="*")
 
 # TODO: OPEN IN "http://localhost:5000/"
 
 # TODO: Vergeet NIET. Dit moet in juiste class komen. Dit is tijdelijk
+# TODO: Hij moet bestanden wegooien
 FOLDERPdf = "tempTestUpload"
 VECTOR_DATABASE_FOLDER = "VectorDBStoreFolder"
 NAME_VectorDB = "Tt1"
@@ -39,27 +40,36 @@ def handle_file(data):
     # Verstuur een bevestiging terug naar de client
     socketio.emit('upload_status', {'message': f"Bestand {file_name} succesvol geüpload!"})
 
-@socketio.on('LoadInVectorDB')
-def LoadPDF_TO_VectorDB(data):
-    socketio.emit('ReceivedRequest', {"message": f'ProcessingFiles'})
+def setName_c_d(data):
+    global NAME_VectorDB, NAME_Collection
+    print("HIER -------------\n HIER\n----------")
+    NAME_Collection = data["collection"]
+    NAME_VectorDB = data["vectordb"]
+    socketio.emit('ReceivedRequest', {"message": f"\nChanged database name to {NAME_VectorDB}\nChanged collection name to {NAME_Collection}  "})
 
+@socketio.on("LoadInVectorDB")
+def LoadPDF_TO_VectorDB(data):
+    setName_c_d(data)
+
+    socketio.emit('ReceivedRequest', {"message": f'ProcessingFiles\nCol {NAME_Collection}\nVec {NAME_VectorDB}'})
     try:
         loadPDFVectorDB(NAME_VectorDB, NAME_Collection, FOLDERPdf)
         socketio.emit("ReceivedRequest", {"message":"Succeed! Now initializing Retriever Module'"})
         try:
             initializeModelAndDatabase(VECTOR_DATABASE_FOLDER+"\\"+NAME_VectorDB, NAME_Collection)
             socketio.emit("ReceivedRequest", {"message": "inintialized!"})
-            for filename in os.listdir(FOLDERPdf):
-                file_path = os.path.join(FOLDERPdf, filename)
-                if os.path.isfile(file_path):
-                    os.remove(file_path)
-                    print(f"Bestand verwijderd: {file_path}")
 
         except:
             socketio.emit("ReceivedRequest", {"message": "Failed at initializing Retriever Module"})
 
     except:
         socketio.emit("ReceivedRequest", {"message": "Failed"})
+
+    finally:
+        for filename in os.listdir(FOLDERPdf):
+            file_path = os.path.join(FOLDERPdf, filename)
+            os.remove(file_path)
+            print(f"Bestand verwijderd: {file_path}")
 
 if __name__ == '__main__':
     socketio.run(app, debug=True, allow_unsafe_werkzeug=True, host="0.0.0.0", port=5000)

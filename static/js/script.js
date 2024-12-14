@@ -3,24 +3,62 @@
 // Connect to the server
 // const socket = io();
 // Client-side code
-const socket = io("http:192.168.2.69:5000", {
+const socket = io("http://192.168.2.71:5000/", {
     transports: ["websocket"], // Forceer WebSocket als transport
     secure: false,             // Zorg dat het geen HTTPS probeert
+});
+
+const fileInput = document.getElementById('fileInput');
+const customButton = document.getElementById('uploadedFiles');
+
+// Voeg een eventlistener toe aan de knop
+customButton.addEventListener('click', () => {
+  fileInput.click(); // Simuleer een klik op het verborgen input element
+});
+
+// Optioneel: Toon de geselecteerde bestandsnamen
+fileInput.addEventListener('change', () => {
+  const fileList = fileInput.files;
+  if (fileList.length > 0) {
+    alert(`Geselecteerde bestanden: ${Array.from(fileList).map(file => file.name).join(', ')}`);
+  }
 });
 
 
 function SendMsg() {
     // const input = document.getElementById('chat-input');
     // const message = input.value;
-    const input = document.getElementById('chat-input');
+    const input = document.getElementById('messageUser');
     const message = input.textContent.trim();
                 // Stuur de invoerwaarde naar de server
     socket.emit('askLLM', { text: message });
         input.value = ''; // Leeg het tekstveld na het verzenden
 }
 
+function sentNamings(){
+    const input_C = document.getElementById('collectionNaming');
+    const collectionName = input_C.textContent.trim();
+
+    const input_D = document.getElementById('dataBaseNaming');
+    const databaseName = input_D.textContent.trim();
+
+    socket.emit("setNamingVectorDB", {collection:collectionName, vectordb:databaseName});
+    input_C.textContent = "";
+    input_D.textContent = "";
+
+}
 
 function UploadFiles(){
+    const input_C = document.getElementById('collectionNaming');
+    const collectionName = input_C.textContent.trim();
+
+    const input_D = document.getElementById('dataBaseNaming');
+    const databaseName = input_D.textContent.trim();
+
+    //socket.emit("setNamingVectorDB", {collection:collectionName, vectordb:databaseName});
+    input_C.textContent = "";
+    input_D.textContent = "";
+
             const files = document.getElementById('fileInput').files;
 
             if (files.length === 0) {
@@ -46,7 +84,7 @@ function UploadFiles(){
                 reader.readAsArrayBuffer(file); // Lees het bestand als arraybuffer
             }
             fileInput.value = '';
-            socket.emit("LoadInVectorDB", {message: 'Upload'})
+            socket.emit("LoadInVectorDB", {collection: collectionName, vectordb:databaseName})
 }
 
 socket.on('ReceivedRequest', (data) => {
@@ -62,5 +100,4 @@ socket.on('ReceivedRequest', (data) => {
 
 socket.on('upload_status', (data) => {
             alert("FROM SERVER: "+data.message)
-
 });

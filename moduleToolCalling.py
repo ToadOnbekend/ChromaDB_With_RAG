@@ -8,16 +8,28 @@ orientatie_q = ""
 def string_to_list(input_string):
     return ast.literal_eval(input_string)
 
-def query(question: str) -> str:
-    # print(type(question), ":: \033[35mTYPE\033[0m")
-    # print(len(question), ":: \033[35mLEN\033[0m")
-    # print(question,":: \033[35mCONTENT\033[0m")
-    #
-    # if type(question) == str:
-    #    question = string_to_list(question)
+# def query(question: str) -> str:
+#     requered_data = handle_question([question], ["H"])
+#     return requered_data
 
-    requered_data = handle_question([question])
+def query(query_questions: list, questions_user: list) -> str:
+    print(type(query_questions), ":: \033[35mTYPE\033[0m")
+    print(len(query_questions), ":: \033[35mLEN\033[0m")
+    print(query_questions,":: \033[35mCONTENT\033[0m")
+
+    if type(query_questions) == str:
+       query_questions = string_to_list(query_questions)
+
+    print(type(questions_user), ":: \033[35mTYPE Qu\033[0m")
+    print(len(questions_user), ":: \033[35mLEN Qu\033[0m")
+    print(questions_user,":: \033[35mCONTENT Qu\033[0m")
+
+    if type(questions_user) == str:
+       questions_user = string_to_list(questions_user)
+
+    requered_data = handle_question(query_questions, questions_user)
     return requered_data
+
 
 def dont_query(x):
     return x
@@ -34,6 +46,20 @@ def remove_tool_messages(messages):
     return cleaned_messages
 
 
+# askAboutFiles_tool = {
+#     'type': 'function',
+#     'function': {
+#         'name': 'query',
+#         'description': "Gebruik deze functie ALTIJD, ongeacht de prompt van de gebruiker",#'Deze functie geeft de benodigde externe informatie om de vraag te beantwoorden',
+#         'parameters': {
+#             'type': 'object',
+#             'required': ['question'],
+#             'properties': {
+#                 'question': {'type': 'str', 'description': 'De prompt met enkel de vraag van de gebruiker. Neem de vraag van de gebruiker EXACT over! Verander de vraag NIET! '}
+#             },
+#         },
+#     },
+# }
 askAboutFiles_tool = {
     'type': 'function',
     'function': {
@@ -41,9 +67,10 @@ askAboutFiles_tool = {
         'description': "Gebruik deze functie ALTIJD, ongeacht de prompt van de gebruiker",#'Deze functie geeft de benodigde externe informatie om de vraag te beantwoorden',
         'parameters': {
             'type': 'object',
-            'required': ['question'],
+            'required': ['query_questions', 'questions_user'],
             'properties': {
-                'question': {'type': 'str', 'description': 'De prompt met enkel de vraag van de gebruiker. Neem de vraag van de gebruiker EXACT over! Verander de vraag NIET! '}
+                'query_questions': {'type': 'list', 'description': 'Bedenk de benodigde zoekzinnen om de juiste gegevens te krijgen voor het beantwoorden van de vraag(vragen) uit de prompt'},
+                'questions_user': {'type': 'list', 'description': 'Geef de vraag(vragen) van de gebruiker die in de pompt staat'},
             },
         },
     },

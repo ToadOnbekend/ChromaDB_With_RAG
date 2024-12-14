@@ -50,16 +50,60 @@ h1 {
 /*    margin: 5px;*/
 /*}*/
 
-.chatInput {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+    /*.container {*/
+    /*    display: flex; !* Zorgt ervoor dat de children (.FileNaming en .chatInput) naast elkaar staan *!*/
+    /*    align-items: center;*/
+    /*    !*justify-content: flex-start;*!*/
+    /*    !* Zorgt ervoor dat de items verticaal gecentreerd zijn *!*/
+    /*    justify-content: safe;*/
+    /*    !*width: 100%; !* Laat de container de volledige breedte innemen *!*!*/
+    /*}*/
+/*.FileNaming {*/
+/*    !*width: 10%;*!*/
+/*    !*display: flex;*!*/
+/*    justify-content: flex-start; !* Inhoud aan de linkerkant *!*/
+/*    align-items: center; !* Verticale uitlijning *!*/
+/*    !*flex: 1; !* Optioneel: Laat .FileNaming meer ruimte innemen *!*!*/
+/*}*/
+
+/*.chatInput {*/
+/*    width: 100%;*/
+/*    display: flex;*/
+/*    justify-content: center; !* Inhoud gecentreerd binnen de chatInput-container *!*/
+/*    align-items: center; !* Verticale uitlijning *! !* Optioneel: Laat .chatInput meer ruimte innemen dan .FileNaming *!*/
+/*}*/
 /*#textInput{*/
 /*    background-color: red;*/
 /*    border: none;*/
 /*    width: 80%;*/
 /*}*/
+.chatInput {
+    /*width: 100%;*/
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.FileNaming {
+    display: flex;
+    justify-content: center;
+    align-items: center ;
+}
+
+#uploadButton{
+    border:none;
+    border: red solid 2px;
+    height: 45px;
+    margin-left: 10px;
+}
+#fileInput {
+  display: none;
+}
+#uploadedFiles{
+    border: none;
+    height: 45px;
+    border: black solid 2px;
+}
 
 #sendButton{
     border: black solid 2px;
@@ -67,25 +111,90 @@ h1 {
     margin-left: 5px;
     background-color: #8eff6f;
 }
-#chat-input {
-    min-height: 45px; /* Zorgt voor voldoende ruimte om te typen */
-    /*background-color: rgba(255, 74, 74, 0.2);*/
-        border: #000000 2px solid;
+#messageUser{
+
+    min-height: 45px;
+    border: #000000 2px solid;
     color: black; /* Tekstkleur voor goede leesbaarheid */
-    padding-top: 4px;
     padding-left:12px; /* Ruimte rondom de tekst */
-    margin: 10px 0; /* Marges boven en onder voor ruimtelijke scheiding */
+    margin: 2px 0; /* Marges boven en onder voor ruimtelijke scheiding */
     margin-left: 45px;
     outline: none; /* Verwijdert de standaard focus rand */
     white-space: pre-wrap; /* Behoudt witruimte en regelafbrekingen */
     /*overflow-y: auto; !* Maakt scrollen mogelijk als de inhoud te lang is *!*/
     font-size:16px;
-    width: 50%;
+    width: 35%;
     word-wrap: break-word;
         overflow-y: auto;
     max-height: 45px;
-    box-sizing: border-box;
+
     font-family: DinNext;
     font-weight: 100;
+    display: flex;
+    align-items: center;
+}
+#collectionNaming, #dataBaseNaming{
 
+    padding-top: 8px;
+    padding-left: 8px;
+    display: block;
+    white-space: nowrap;
+    /*height: 20px;*/
+    /*border: #ff0000 2px solid;*/
+    background-color: #a8a8a8;
+    color: black; /* Tekstkleur voor goede leesbaarheid */
+   /* Ruimte rondom de tekst */
+   /* Marges boven en onder voor ruimtelijke scheiding */
+
+    outline: none;
+    /*overflow-y: auto; !* Maakt scrollen mogelijk als de inhoud te lang is *!*/
+    font-size:16px;
+        /*word-wrap: break-word;*/
+        /*overflow-y: auto;*/
+    overflow: hidden;
+    height: 30px;
+
+    font-family: DinNext;
+    font-weight: 100;
+    /*display: flex;*/
+
+
+}
+
+
+/*#collectionNaming{*/
+/*    width: 13% !important;*/
+/*    min-height: 20px !important;*/
+/*    max-height: 20px !important;*/
+/*    padding: 12px;*/
+/*}*/
+
+/*#collectionNaming{*/
+/*    width: 13%;*/
+
+/*}*/
+
+.bordered-container {
+    padding: 13px;
+    position: relative; /* Zorg ervoor dat de container de pseudo-elementen kan positioneren */
+    border: 2px solid black; /* De rand van de container */
+ /* Ruimte binnen de rand */
+ /*   justify-content: end;*/
+
+ /*   justify-items: center;*/
+ /*   min-height: 16px;*/
+ /*   max-height: 16px;*/
+    min-width: 13%;
+    max-width: 13%;
+}
+.border-text {
+    position: absolute;
+    top: -12px; /* Plaats de tekst in de rand */
+    left: 10%; /* Horizontaal centreren */
+    background: white; /* Zorg dat de tekst een achtergrond heeft */
+    padding: 0 10px; /* Ruimte rond de tekst */
+    font-size:20px; /* Grootte van de tekst */
+    color: black; /* Kleur van de tekst */
+    font-family: DinNext;
+    font-weight: 700;
 }

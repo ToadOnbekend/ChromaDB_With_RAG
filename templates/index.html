@@ -11,17 +11,34 @@
 
 </head>
 <body>
-    <script src="static\\js\\script.js"></script>
     <h1>Upload RAG Demo</h1>
 
     <ul id="messages"></ul>
 
-        <input type="file" id="fileInput" multiple>
-        <button id="uploadButton" onclick="UploadFiles()">Upload</button>
-    <div class="chatInput">
-       <!-- <input id="textInput" placeholder="Typ iets..." /> -->
-        <div id="chat-input" contenteditable="true" data-placeholder="Begin typing...">Hoi</div>
-        <button id="sendButton" onclick="SendMsg()">Stuur</button>
-    </div>
+<!--    <div class="container">-->
+
+            <div class="FileNaming">
+
+
+                    <div class="bordered-container">
+                        <div id="collectionNaming" data-placeholder="Begin typing..." contenteditable="true"></div>
+                        <span class="border-text">Collectie naam</span>
+                    </div>
+
+                    <div class="bordered-container">
+                        <div id="dataBaseNaming" data-placeholder="Begin typing..." contenteditable="true"> </div>
+                        <span class="border-text">Database naam</span>
+                    </div>
+            </div>
+
+            <div class="chatInput">
+                     <input type="file" id="fileInput" multiple>
+                     <button class="upload-button" id="uploadedFiles">De betere knop</button>
+                     <button id="uploadButton" onclick="UploadFiles()">Upload</button>
+                     <div id="messageUser" contenteditable="true"></div>
+                     <button id="sendButton" onclick="SendMsg()">Stuur</button>
+            </div>
+<!--    </div>-->
+   <script src="static\\js\\script.js"></script
 </body>
 </html>
