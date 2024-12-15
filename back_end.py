@@ -4,6 +4,7 @@ from moduleToolCalling import questionRAG
 from moduleLoadInChromaDB import loadPDFVectorDB
 from module_ChromaDB_Ask import initializeModelAndDatabase
 import os
+import ollama
 import shutil
 app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins="*")
@@ -25,10 +26,19 @@ def index():
 def give_awnser(data):
     socketio.emit('ReceivedRequest', {'message': f"Received prompt {data['text']}"})
     awnserLLM = questionRAG(data['text'])
+    # awnserLLM = "wfeferofjerfjgiwoerjgoeiprgoiergjoirgeriogjperogjewrpiogjweir"
+    # output = ollama.generate(
+    #     model="llama3.2:3b",
+    #     prompt=f"Geef uitgebreid antwoord op de prompt:\n{data['text']}",
+    #     options={'temperature': 0.5}
+    #     ## PAS de willekeurigheid van model aan. Tussen 0.1 en 1.  0.1, consistent en 1 creatief, minder consistent.
+    # )
+    # awnserLLM = output["response"]
+    # awnserLLM = "# TEST: Er si eiojwefijewrgfiwergpierughpuierghiuerhqpowekfwoekfpwoefwefiwei[fjwofijwefgperuighuieorghuioerhgiuwerhgerwiuoghwieruhguiewrhguiewrhg"
     socketio.emit('AwnserLLM', {'message': f'{awnserLLM}'})
 
 @socketio.on('upload_file')
-def handle_file(data):
+def handle_file(data, callback = None):
     file_name = data['fileName']
     file_data = data['fileData']
 
@@ -40,6 +50,7 @@ def handle_file(data):
     # Verstuur een bevestiging terug naar de client
     socketio.emit('upload_status', {'message': f"Bestand {file_name} succesvol geüpload!"})
 
+
 def setName_c_d(data):
     global NAME_VectorDB, NAME_Collection
     print("HIER -------------\n HIER\n----------")
@@ -47,29 +58,39 @@ def setName_c_d(data):
     NAME_VectorDB = data["vectordb"]
     socketio.emit('ReceivedRequest', {"message": f"\nChanged database name to {NAME_VectorDB}\nChanged collection name to {NAME_Collection}  "})
 
+def remove_files():
+    try:
+        for filename in os.listdir(FOLDERPdf):
+            file_path = os.path.join(FOLDERPdf, filename)
+            os.remove(file_path)
+            print(f"Bestand verwijderd: {file_path}")
+    except:
+        print("ERROR Removing FILES ------- ")
+
+@socketio.on("ChangeVectorDBonCommand")
+def changeVectorDB(data):
+    initializeModelAndDatabase(VECTOR_DATABASE_FOLDER + "\\" + NAME_VectorDB, NAME_Collection)
+
 @socketio.on("LoadInVectorDB")
 def LoadPDF_TO_VectorDB(data):
     setName_c_d(data)
 
-    socketio.emit('ReceivedRequest', {"message": f'ProcessingFiles\nCol {NAME_Collection}\nVec {NAME_VectorDB}'})
+
     try:
         loadPDFVectorDB(NAME_VectorDB, NAME_Collection, FOLDERPdf)
         socketio.emit("ReceivedRequest", {"message":"Succeed! Now initializing Retriever Module'"})
         try:
             initializeModelAndDatabase(VECTOR_DATABASE_FOLDER+"\\"+NAME_VectorDB, NAME_Collection)
+            remove_files()
             socketio.emit("ReceivedRequest", {"message": "inintialized!"})
 
         except:
+            remove_files()
             socketio.emit("ReceivedRequest", {"message": "Failed at initializing Retriever Module"})
 
     except:
+        remove_files()
         socketio.emit("ReceivedRequest", {"message": "Failed"})
-
-    finally:
-        for filename in os.listdir(FOLDERPdf):
-            file_path = os.path.join(FOLDERPdf, filename)
-            os.remove(file_path)
-            print(f"Bestand verwijderd: {file_path}")
 
 if __name__ == '__main__':
     socketio.run(app, debug=True, allow_unsafe_werkzeug=True, host="0.0.0.0", port=5000)

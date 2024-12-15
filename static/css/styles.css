@@ -4,6 +4,7 @@ body {
     display: flex;
     flex-direction: column;
     height: 100vh;
+    overflow: hidden;
 }
 
 
@@ -77,22 +78,45 @@ h1 {
 /*    border: none;*/
 /*    width: 80%;*/
 /*}*/
+/*.chatInput {*/
+/*    !*width: 100%;*!*/
+
+/*    display: flex;*/
+/*    justify-content: center;*/
+/*    align-items: center;*/
+
+
+/*}*/
 .chatInput {
-    /*width: 100%;*/
-    position: relative;
+    position: absolute; /* Zorgt ervoor dat het relatief is aan de dichtstbijzijnde gepositioneerde ouder */
+    bottom: 0; /* Plaatst het element aan de onderkant van de pagina */
+    width: 100%; /* Laat het de volledige breedte innemen */
     display: flex;
     justify-content: center;
     align-items: center;
-}
-.FileNaming {
-    display: flex;
-    justify-content: center;
-    align-items: center ;
+    /*background-color: white; !* Optioneel: achtergrondkleur *!*/
+    /*box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); !* Optioneel: subtiele schaduw *!*/
+    z-index: 100; /* Zorg ervoor dat het boven andere elementen blijft */
+    padding: 10px;
 }
 
-#uploadButton{
+
+.FileNaming {
+    position: absolute; /* Plaats het direct boven .chatInput */
+    bottom: 70px; /* Zorg dat het net boven .chatInput zit */
+    width: 100%; /* Laat het de volledige breedte innemen */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 0; /* Margin wordt niet meer gebruikt */
+    background-color: white; /* Optioneel: achtergrondkleur voor duidelijkheid */
+    z-index: 99; /* Zorgt ervoor dat het boven andere elementen blijft */
+    padding: 10px; /* Optioneel: padding voor een nette weergave */
+}
+
+#uploadButton, #sendLoadCommand{
     border:none;
-    border: red solid 2px;
+    border: #6600ff solid 2px;
     height: 45px;
     margin-left: 10px;
 }
@@ -103,6 +127,13 @@ h1 {
     border: none;
     height: 45px;
     border: black solid 2px;
+}
+
+#selectVectorDb{
+    border: none;
+    height: 45px;
+    border: black solid 2px;
+    background-color: rgba(255, 0, 115, 0.25);
 }
 
 #sendButton{
@@ -119,9 +150,8 @@ h1 {
     padding-left:12px; /* Ruimte rondom de tekst */
     margin: 2px 0; /* Marges boven en onder voor ruimtelijke scheiding */
     margin-left: 45px;
-    outline: none; /* Verwijdert de standaard focus rand */
-    white-space: pre-wrap; /* Behoudt witruimte en regelafbrekingen */
-    /*overflow-y: auto; !* Maakt scrollen mogelijk als de inhoud te lang is *!*/
+    outline: none;
+    white-space: pre-wrap;
     font-size:16px;
     width: 35%;
     word-wrap: break-word;
@@ -134,58 +164,38 @@ h1 {
     align-items: center;
 }
 #collectionNaming, #dataBaseNaming{
-
     padding-top: 8px;
     padding-left: 8px;
     display: block;
     white-space: nowrap;
-    /*height: 20px;*/
-    /*border: #ff0000 2px solid;*/
     background-color: #a8a8a8;
-    color: black; /* Tekstkleur voor goede leesbaarheid */
-   /* Ruimte rondom de tekst */
-   /* Marges boven en onder voor ruimtelijke scheiding */
-
+    color: black;
     outline: none;
-    /*overflow-y: auto; !* Maakt scrollen mogelijk als de inhoud te lang is *!*/
     font-size:16px;
-        /*word-wrap: break-word;*/
-        /*overflow-y: auto;*/
     overflow: hidden;
     height: 30px;
 
     font-family: DinNext;
     font-weight: 100;
-    /*display: flex;*/
 
 
 }
 
 
-/*#collectionNaming{*/
-/*    width: 13% !important;*/
-/*    min-height: 20px !important;*/
-/*    max-height: 20px !important;*/
-/*    padding: 12px;*/
-/*}*/
-
-/*#collectionNaming{*/
-/*    width: 13%;*/
-
-/*}*/
-
 .bordered-container {
     padding: 13px;
-    position: relative; /* Zorg ervoor dat de container de pseudo-elementen kan positioneren */
-    border: 2px solid black; /* De rand van de container */
- /* Ruimte binnen de rand */
- /*   justify-content: end;*/
-
- /*   justify-items: center;*/
- /*   min-height: 16px;*/
- /*   max-height: 16px;*/
+    position: relative;
+    border: 2px solid black;
     min-width: 13%;
     max-width: 13%;
+    min-height: 50px;
+}
+.bordered-container2 {
+       padding: 13px;
+    position: relative;
+    border: 2px solid black;
+    margin-left: 10px;
+    min-height: 50px;
 }
 .border-text {
     position: absolute;
@@ -193,8 +203,64 @@ h1 {
     left: 10%; /* Horizontaal centreren */
     background: white; /* Zorg dat de tekst een achtergrond heeft */
     padding: 0 10px; /* Ruimte rond de tekst */
-    font-size:20px; /* Grootte van de tekst */
-    color: black; /* Kleur van de tekst */
+    font-size:20px;
+    color: black;
     font-family: DinNext;
     font-weight: 700;
 }
+
+.message_container{
+    min-height: 85%;
+    max-height: 85%;
+    display: flex;
+    justify-content: center;
+    /*align-items: center ;*/
+
+}
+/*#messages{*/
+/*    max-width: 33%;*/
+/*}*/
+
+/*#messages{*/
+/*    max-width: 33%;*/
+/*    !*background-color: #e7e7e7;*!*/
+/*    padding: 10px;*/
+/*}*/
+#messages {
+    display: flex;
+    flex-direction: column;
+    max-width: 33%;
+    padding: 10px;
+}
+#messages li.LLMresponds {
+    /*max-width: 33%;*/
+    margin-top: 6px;
+    padding:7px;
+    /*padding-left: 3px;*/
+    /*border: red solid 1px;!* Lettergrootte *!*/
+    background-color: rgba(255, 0, 0, 0.09); /* 0.09*/
+    word-wrap: break-word;
+
+
+    font-family: DinNext;
+    font-weight: 100;
+}
+
+#messages li.humanQuestion {
+    margin-top: 6px;
+    padding: 5px;
+    border: #002aff solid 1px;
+    background-color: rgba(0, 4, 255, 0.09);
+    word-wrap: break-word;
+        font-family: DinNext;
+    font-weight: 100;
+    max-width: 70%; /* Maak het korter aan de linkerkant */
+    margin-left: auto; /* Creëer ruimte aan de linkerkant */
+    margin-right: 0; /* Zorg ervoor dat het aan de rechterkant vastzit */
+    display: inline;
+
+}
+
+/*.send_control{*/
+/*    border:*/
+/*}*/
