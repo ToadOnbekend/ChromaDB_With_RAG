@@ -120,7 +120,16 @@ function addQuestionMessage(){
 }
 
 function setVectorDB(){
+    const input_C = document.getElementById('collectionNaming');
+    const collectionName = input_C.textContent.trim();
 
+    const input_D = document.getElementById('dataBaseNaming');
+    const databaseName = input_D.textContent.trim();
+
+    socket.emit("ChangeVectorDBonCommand", {collection: collectionName, vectordb: databaseName})
+
+    input_C.textContent = "";
+    input_D.textContent = "";
 }
 
 socket.on('upload_status', (data) => {

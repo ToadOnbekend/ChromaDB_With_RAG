@@ -69,7 +69,12 @@ def remove_files():
 
 @socketio.on("ChangeVectorDBonCommand")
 def changeVectorDB(data):
-    initializeModelAndDatabase(VECTOR_DATABASE_FOLDER + "\\" + NAME_VectorDB, NAME_Collection)
+    global NAME_VectorDB, NAME_Collection
+
+    NAME_CollectionF = data["collection"]
+    NAME_VectorDBF = data["vectordb"]
+    initializeModelAndDatabase(VECTOR_DATABASE_FOLDER + "\\" +  NAME_VectorDBF, NAME_CollectionF)
+    socketio.emit("ReceivedRequest", {"message": f"Changed vectorDB and collection to\nVectorDB: {NAME_VectorDB}\nCollection: {NAME_Collection}"})
 
 @socketio.on("LoadInVectorDB")
 def LoadPDF_TO_VectorDB(data):
