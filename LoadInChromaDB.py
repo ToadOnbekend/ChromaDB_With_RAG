@@ -9,7 +9,7 @@ import pymupdf
 
 PDF_FOLDER_PATH = "FolderWithPDFs" #"FolderNulPuntBepalenInfo"
 QUEUE_BATCH_SIZE = 250
-PATH_ChromaDB = "ChromaVectorDB"
+PATH_ChromaDB = "ChromaVectorDBTester"
 COLLECTION_NAME = "Collection"
 PROCESS_DEVICE = "cuda" # Of "cpu"
 MODEL_EMBEDDING = "NetherlandsForensicInstitute/robbert-2022-dutch-sentence-transformers" # Zie Hugging Face voor meer modellen

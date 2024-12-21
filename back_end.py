@@ -12,7 +12,7 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 # TODO: OPEN IN "http://localhost:5000/"
 
 # TODO: Vergeet NIET. Dit moet in juiste class komen. Dit is tijdelijk
-# TODO: Hij moet bestanden wegooien
+
 FOLDERPdf = "tempTestUpload"
 VECTOR_DATABASE_FOLDER = "VectorDBStoreFolder"
 NAME_VectorDB = "Tt1"
