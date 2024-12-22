@@ -1,11 +1,13 @@
 from flask import Flask, render_template
 from flask_socketio import SocketIO, emit
-from moduleToolCalling import questionRAG
 from moduleLoadInChromaDB import loadPDFVectorDB
-from module_ChromaDB_Ask import initializeModelAndDatabase
+import classQuery
+import classLLM
 import os
 import ollama
 import shutil
+
+
 app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins="*")
 
@@ -14,9 +16,9 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 # TODO: Vergeet NIET. Dit moet in juiste class komen. Dit is tijdelijk
 
 FOLDERPdf = "tempTestUpload"
+LLMmodele = ""
+DataBase = ""
 VECTOR_DATABASE_FOLDER = "VectorDBStoreFolder"
-NAME_VectorDB = "Tt1"
-NAME_Collection = "STO"
 @app.route('/')
 def index():
     return render_template('index.html')  # Serve the frontend
@@ -24,8 +26,8 @@ def index():
 
 @socketio.on('askLLM')
 def give_awnser(data):
-    socketio.emit('ReceivedRequest', {'message': f"Received prompt {data['text']}"})
-    awnserLLM = questionRAG(data['text'])
+    socketio.emit('AwnserSystem', {'message': f"Received prompt {data['text']}"})
+    awnserLLM = LLMmodele.handle_input(data['text'])
     # awnserLLM = "wfeferofjerfjgiwoerjgoeiprgoiergjoirgeriogjperogjewrpiogjweir"
     # output = ollama.generate(
     #     model="llama3.2:3b",
@@ -48,7 +50,7 @@ def handle_file(data, callback = None):
         f.write(bytearray(file_data))
 
     # Verstuur een bevestiging terug naar de client
-    socketio.emit('upload_status', {'message': f"Bestand **{file_name}** succesvol geüpload!"})
+    socketio.emit('upload_status', {'message': f"Bestand {file_name} succesvol geüpload!"})
 
 
 def setName_c_d(data):
@@ -56,7 +58,7 @@ def setName_c_d(data):
     print("HIER -------------\n HIER\n----------")
     NAME_Collection = data["collection"]
     NAME_VectorDB = data["vectordb"]
-    socketio.emit("ReceivedRequest", {"message": f"Changed vectorDB and collection to\nVectorDB: **{NAME_VectorDB}**\nCollection: **{NAME_Collection}**"})
+    socketio.emit('AwnserSystem', {"message": f"\nChanged database name to {NAME_VectorDB}\nChanged collection name to {NAME_Collection}  "})
 
 def remove_files():
     try:
@@ -69,12 +71,18 @@ def remove_files():
 
 @socketio.on("ChangeVectorDBonCommand")
 def changeVectorDB(data):
-    global NAME_VectorDB, NAME_Collection
 
     NAME_CollectionF = data["collection"]
     NAME_VectorDBF = data["vectordb"]
-    initializeModelAndDatabase(VECTOR_DATABASE_FOLDER + "\\" +  NAME_VectorDBF, NAME_CollectionF)
-    socketio.emit("ReceivedRequest", {"message": f"Changed vectorDB and collection to\nVectorDB: **{NAME_VectorDB}**\nCollection: **{NAME_Collection}**"})
+    LLMmodele.changeDatabse(VECTOR_DATABASE_FOLDER + "\\" +  NAME_VectorDBF, NAME_CollectionF)
+    LLMmodele.resetMemory()
+    LLMmodele.setMemory([{
+        "role": "system",
+        "content": (
+            "Je bent een behulpzame ai assistente. Geef uitgebreid antwoord. Gebruik ALTIJD de query-functie, ONGEACHT de prompt van de gebruiker. Verander de prompt van de gebruiker NOOIT!"
+            )
+        }])
+    socketio.emit("AwnserSystem", {"message": f"Changed vectorDB and collection to\nVectorDB: {NAME_VectorDB}\nCollection: {NAME_Collection}"})
 
 @socketio.on("LoadInVectorDB")
 def LoadPDF_TO_VectorDB(data):
@@ -83,19 +91,32 @@ def LoadPDF_TO_VectorDB(data):
 
     try:
         loadPDFVectorDB(NAME_VectorDB, NAME_Collection, FOLDERPdf)
-        socketio.emit("ReceivedRequest", {"message":"Succeed! Now initializing Retriever Module'"})
+        socketio.emit("AwnserSystem", {"message":"Succeed! Now initializing Retriever Module'"})
         try:
-            initializeModelAndDatabase(VECTOR_DATABASE_FOLDER+"\\"+NAME_VectorDB, NAME_Collection)
+            LLMmodele.changeDatabse(VECTOR_DATABASE_FOLDER+"\\"+NAME_VectorDB, NAME_Collection)
             remove_files()
-            socketio.emit("ReceivedRequest", {"message": "inintialized!"})
+            socketio.emit("AwnserSystem", {"message": "inintialized!"})
 
         except:
             remove_files()
-            socketio.emit("ReceivedRequest", {"message": "Failed at initializing Retriever Module"})
+            socketio.emit("AwnserSystem", {"message": "Failed at initializing Retriever Module"})
 
     except:
         remove_files()
-        socketio.emit("ReceivedRequest", {"message": "Failed"})
+        socketio.emit("AwnserSystem", {"message": "Failed"})
 
 if __name__ == '__main__':
+    LLMmodele = classLLM.LLMAgent()
+    VectorDB = classQuery.QueryEngine()
+    VectorDB.initialize("ChromaVectorDBTester", "Collection")
+    LLMmodele.initialize(
+        "llama3.2:3b",
+        [{
+        "role": "system",
+        "content": (
+            "Je bent een behulpzame ai assistente. Geef uitgebreid antwoord. Gebruik ALTIJD de query-functie, ONGEACHT de prompt van de gebruiker. Verander de prompt van de gebruiker NOOIT!"
+            )
+        }],
+        VectorDB
+        )
     socketio.run(app, debug=True, allow_unsafe_werkzeug=True, host="0.0.0.0", port=5000)

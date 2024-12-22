@@ -25,6 +25,8 @@ class QueryEngine():
 
     def initialize(self, pathChromaDB, collectionNameV):
         print("\033[36mInitializing...\033[0m")
+        print("SET \033[1mPathChromaDB {}\033[0m".format(pathChromaDB))
+        print("SET \033[1mCollectionNameV {}\033[0m\n".format(collectionNameV))
         self.chroma_client = chromadb.PersistentClient(path=pathChromaDB)
         self.sentence_transformer_ef = embedding_functions.SentenceTransformerEmbeddingFunction(
             model_name=self.MODEL_EMBEDDING, device=self.PROCESS_DEVICE, trust_remote_code=True,

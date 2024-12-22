@@ -260,7 +260,18 @@ h1 {
     display: inline;
 
 }
+#messages li.system {
+    /*max-width: 33%;*/
+    margin-top: 6px;
+    padding:7px;
+    border-left: rgba(255, 174, 0, 0.74) solid 3px;
+    background-color: rgba(168, 114, 1, 0.18);
+    word-wrap: break-word;
 
+
+    font-family: DinNext;
+    font-weight: 100;
+}
 /*.send_control{*/
 /*    border:*/
 /*}*/

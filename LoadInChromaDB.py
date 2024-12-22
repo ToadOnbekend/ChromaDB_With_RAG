@@ -7,10 +7,10 @@ import re
 import os
 import pymupdf
 
-PDF_FOLDER_PATH = "FolderWithPDFs" #"FolderNulPuntBepalenInfo"
+PDF_FOLDER_PATH = "pdfstore" #"FolderNulPuntBepalenInfo"
 QUEUE_BATCH_SIZE = 250
 PATH_ChromaDB = "ChromaVectorDBTester"
-COLLECTION_NAME = "Collection"
+COLLECTION_NAME = "Col2"
 PROCESS_DEVICE = "cuda" # Of "cpu"
 MODEL_EMBEDDING = "NetherlandsForensicInstitute/robbert-2022-dutch-sentence-transformers" # Zie Hugging Face voor meer modellen
 EMBEDDING_DEMENSIONS = 768

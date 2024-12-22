@@ -33,8 +33,6 @@ fileInput.addEventListener('change', () => {
 
 
 function SendMsg() {
-    // const input = document.getElementById('chat-input');
-    // const message = input.value;
     const input_user = document.getElementById('messageUser');
     const message = input_user.textContent.trim();
 
@@ -49,18 +47,6 @@ function SendMsg() {
     input_user.textContent = "";
 }
 
-function sentNamings(){
-    const input_C = document.getElementById('collectionNaming');
-    const collectionName = input_C.textContent.trim();
-
-    const input_D = document.getElementById('dataBaseNaming');
-    const databaseName = input_D.textContent.trim();
-
-    socket.emit("setNamingVectorDB", {collection:collectionName, vectordb:databaseName});
-    input_C.textContent = "";
-    input_D.textContent = "";
-
-}
 
 function UploadFiles() {
     const files = document.getElementById('fileInput').files;
@@ -113,6 +99,17 @@ socket.on('ReceivedRequest', (data) => {
      newMessage.classList.add('LLMresponds');
      messages.appendChild(newMessage);
  });
+
+ socket.on('AwnserSystem', (data) => {
+     const messages = document.getElementById('messages');
+     const newMessage = document.createElement('li');
+     newMessage.innerHTML = marked.parse(data.message)
+     // Hier toepassen
+
+     newMessage.classList.add('system');
+     messages.appendChild(newMessage);
+ });
+
 
 function addQuestionMessage(){
     const input = document.getElementById('messageUser');

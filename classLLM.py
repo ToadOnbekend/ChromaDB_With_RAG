@@ -102,7 +102,7 @@ class LLMAgent():
             final_response = chat('llama3.2:3b', messages=self.memory_chat)
             self.memory_chat = self.remove_tool_messages(self.memory_chat)
             self.memory_chat.append({'role': 'assistant', 'content': final_response.message.content})
-            return final_response.message.content + "\n\033[1mUSED TOOL\033[0m"
+            return final_response.message.content + "\n> USED TOOL"
 
         else:
             final_response = chat('llama3.2:3b', messages=self.memory_chat)
@@ -110,4 +110,12 @@ class LLMAgent():
             self.memory_chat.append({'role': 'assistant', 'content': final_response.message.content})
             return final_response.message.content
 
+    def resetMemory(self):
+        self.memory_chat = []
+
+    def setMemory(self, chatHistrory):
+        self.memory_chat = chatHistrory
+
+    def changeDatabse(self, pathDb, collectionName):
+        self.query_collection.initialize(pathDb, collectionName)
 
