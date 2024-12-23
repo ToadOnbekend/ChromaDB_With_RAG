@@ -3,9 +3,15 @@ from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import text
+from datetime import datetime
 
 
-class Storage:
+class StorageManager:
+    mappings = {"1":"system",
+                "2":"assistant",
+                "3":"user",
+                "4":"tool"}
+
     def __init__(self, database):
         self.database = database
         self.engine = create_engine(f'sqlite:///databses/{database}.db')
@@ -49,9 +55,85 @@ class Storage:
         self.session.commit()
         print("made")
 
+    def getMessages(self, chatName):
+        message_collection = []
+        sendInfo = []
+        id_current_chat = 0
 
 
-s = Storage('chatIndex')
+        result = self.session.execute(text("""
+                SELECT messages.id_chat, messages.inhoud, messages.recourses, users.id_userrole,messages.datamde
+                FROM messages
+                JOIN indexBase ON messages.id_chat = indexBase.id_chat
+                JOIN users ON messages.id_userrole = users.id_userrole
+                WHERE indexBase.name = :chatName
+                ORDER BY messages.datamde;
+            """), {
+                "chatName": chatName
+        }).fetchall()
 
-s.makeNewChatIdex("c", "c", "c","c","c","c",4,4,4,4,"T","382",930)
-s.addMessage(4,4, "r", "f", "r")
+        result_initalization_pre = self.session.execute(text("""
+                SELECT name, vectordb, collection, model, modelembeding, modelreranking, embeddingdemensions, topnresults, nqueryresults, chunkoverlap, loadmodellocal, datacreated, chunksize 
+                FROM indexBase
+                WHERE name = :chatName
+                LIMIT 1;
+            """), {
+                "chatName": chatName
+        }).fetchall()
+
+        print(result_initalization_pre)
+
+        for result_initalization in result_initalization_pre:
+            result_init = {
+                "nameChat": result_initalization[0],
+                "vectordb": result_initalization[1],
+                "collection": result_initalization[2],
+                "model": result_initalization[3],
+                "modelembedding": result_initalization[4],
+                "modelreranking": result_initalization[5],
+                "embeddingdemensions": result_initalization[6],
+                "topnresults": result_initalization[7],
+                "nqueryresults": result_initalization[8],
+                "chunkoverlap": result_initalization[9],
+                "loadmodellocal": result_initalization[10],
+                "datecreated": result_initalization[11],
+                "chunksize": result_initalization[12]
+            }
+
+
+        for message in result:
+            id_chat = message[0]
+            content = message[1]
+            recourses = message[2]
+            userrole = message[3]
+            datamde = message[4]
+
+            message_collection.append({"role": self.mappings[str(userrole)], "content": content})
+            sendInfo.append([recourses, datamde])
+            id_current_chat = id_chat
+
+        result_database = {
+            "id_chat": id_current_chat,
+            "messages": message_collection,
+            "sendInfo": sendInfo,
+            "init_info": result_init
+        }
+
+        # import pprint
+        # pp = pprint.PrettyPrinter(indent=4, underscore_numbers=True)
+        # pp.pprint(result_database)
+        return result_database
+
+
+
+
+# s = StorageManager('chatIndex')
+#
+# current_time = datetime.now().isoformat()
+# print(current_time)
+# # s.makeNewChatIdex("Toad", "f2", "f4","c","c","c",4,4,4,4,"T",current_time,930)
+# s.addMessage(1,10, "\033[34mTOAD\033[0m", "Pagina 2", current_time)
+# getMessa = s.getMessages("Toad")
+
+
+# TODO:

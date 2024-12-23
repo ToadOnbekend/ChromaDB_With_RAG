@@ -26,6 +26,8 @@ class LLMAgent():
         },
     }
     query_collection = ""
+    storage_m = ""
+    current_chat_c = 0
 
     def __init__(self):
         self.available_tools = {'query': self.query}
