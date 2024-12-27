@@ -1,8 +1,8 @@
-import time
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import text
-from datetime import datetime
+
 
 
 class StorageManager:
@@ -19,7 +19,7 @@ class StorageManager:
 
 
     def makeNewChatIdex(self, name_x, vectordb, collection, model, modelembedding, modelreranking, embeddingdemensions, topnresults, nqueryresults, chunkoverlap, loadmodellocal, chunksize, datecreated):
-        current_id = 0
+        current_id = 0;
 
         self.session.execute(text("""
             INSERT INTO indexBase (name, vectordb, collection, model, modelembeding, modelreranking, embeddingdemensions, topnresults, nqueryresults, chunkoverlap, loadmodellocal, datacreated, chunksize)
@@ -148,6 +148,37 @@ class StorageManager:
         }
 
         return result_database
+
+    def getLoadconfig(self, chatId):
+        result_init = {}
+        result_initalization_pre = self.session.execute(text("""
+                        SELECT name, vectordb, collection, model, modelembeding, modelreranking, embeddingdemensions, topnresults, nqueryresults, chunkoverlap, loadmodellocal, datacreated, chunksize 
+                        FROM indexBase
+                        WHERE id_chat = :chatID
+                        LIMIT 1;
+                    """), {
+            "chatID": chatId
+        }).fetchall()
+
+        for result_initalization in result_initalization_pre:
+            result_init = {
+                "nameChat": result_initalization[0],
+                "vectordb": result_initalization[1],
+                "collection": result_initalization[2],
+                "model": result_initalization[3],
+                "modelembedding": result_initalization[4],
+                "modelreranking": result_initalization[5],
+                "embeddingdemensions": result_initalization[6],
+                "topnresults": result_initalization[7],
+                "nqueryresults": result_initalization[8],
+                "chunkoverlap": result_initalization[9],
+                "loadmodellocal": result_initalization[10],
+                "datecreated": result_initalization[11],
+                "chunksize": result_initalization[12]
+            }
+
+        return result_init
+
 
 
 

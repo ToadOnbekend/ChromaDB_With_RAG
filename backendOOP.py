@@ -27,15 +27,15 @@ def index():
 @socketio.on('askLLM')
 def give_awnser(data):
     socketio.emit('AwnserSystem', {'message': f"Received prompt {data['text']}"})
-    awnserLLM = LLMmodele.handle_input(data['text'])
+    # awnserLLM = LLMmodele.handle_input(data['text'])
     # awnserLLM = "wfeferofjerfjgiwoerjgoeiprgoiergjoirgeriogjperogjewrpiogjweir"
-    # output = ollama.generate(
-    #     model="llama3.2:3b",
-    #     prompt=f"Geef uitgebreid antwoord op de prompt:\n{data['text']}",
-    #     options={'temperature': 0.5}
-    #     ## PAS de willekeurigheid van model aan. Tussen 0.1 en 1.  0.1, consistent en 1 creatief, minder consistent.
-    # )
-    # awnserLLM = output["response"]
+    output = ollama.generate(
+        model="llama3.1:8b",
+        prompt=f"Geef uitgebreid antwoord op de prompt:\n{data['text']}",
+        options={'temperature': 0.5}
+        ## PAS de willekeurigheid van model aan. Tussen 0.1 en 1.  0.1, consistent en 1 creatief, minder consistent.
+    )
+    awnserLLM = output["response"]
     # awnserLLM = "# TEST: Er si eiojwefijewrgfiwergpierughpuierghiuerhqpowekfwoekfpwoefwefiwei[fjwofijwefgperuighuieorghuioerhgiuwerhgerwiuoghwieruhguiewrhguiewrhg"
     socketio.emit('AwnserLLM', {'message': f'{awnserLLM}'})
 

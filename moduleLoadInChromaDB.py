@@ -18,6 +18,34 @@ CHUNK_SIZE = 65
 CHUNK_OVERLAP = 10
 LOAD_MODEL_LOCAL = True  #Als je model lokaal is, zet op True. Dus voor het eerst op False!!
 
+def initialize(information, folderP):
+    global PDF_FOLDER_PATH, PATH_ChromaDB, COLLECTION_NAME, PROCESS_DEVICE, MODEL_EMBEDDING, EMBEDDING_DEMENSIONS, CHUNK_SIZE, CHUNK_OVERLAP, LOAD_MODEL_LOCAL
+
+    # result_init = {
+    #     "nameChat": result_initalization[0],
+    #     "vectordb": result_initalization[1],
+    #     "collection": result_initalization[2],
+    #     "model": result_initalization[3],
+    #     "modelembedding": result_initalization[4],
+    #     "modelreranking": result_initalization[5],
+    #     "embeddingdemensions": result_initalization[6],
+    #     "topnresults": result_initalization[7],
+    #     "nqueryresults": result_initalization[8],
+    #     "chunkoverlap": result_initalization[9],
+    #     "loadmodellocal": result_initalization[10],
+    #     "datecreated": result_initalization[11],
+    #     "chunksize": result_initalization[12]
+    # }
+
+    PDF_FOLDER_PATH = folderP
+    PATH_ChromaDB = information["vectordb"]
+    COLLECTION_NAME = information["collection"]
+    PROCESS_DEVICE = "cuda"
+    MODEL_EMBEDDING = information["modelembedding"]
+    EMBEDDING_DEMENSIONS = information["embeddingdemensions"]
+    CHUNK_SIZE = information["chunksize"]
+    CHUNK_OVERLAP = information["chunkoverlap"]
+    LOAD_MODEL_LOCAL = True if information["loadmodellocal"] else False
 
 def extract_years(filename):
     match = re.search(r'(\d{4}(?:_\d{4})?)', filename)
@@ -120,7 +148,7 @@ def producer(pdf_file, batch_size, queue):
 
 
 def consumer(use_cuda, queue, nameCollection, dataBaseName):
-    chroma_client = chromadb.PersistentClient(path=PATH_ChromaDB+"\\"+dataBaseName)
+    chroma_client = chromadb.PersistentClient(path=dataBaseName)
 
     device = PROCESS_DEVICE
 
@@ -145,10 +173,9 @@ def consumer(use_cuda, queue, nameCollection, dataBaseName):
         )
 
 
-def loadPDFVectorDB(databaseName,nameCollection, FolderContainingFiles):
-    global COLLECTION_NAME
-    COLLECTION_NAME = nameCollection
-    chroma_client = chromadb.PersistentClient(path=PATH_ChromaDB+"\\"+databaseName)
+def loadPDFVectorDB():
+
+    chroma_client = chromadb.PersistentClient(path=PATH_ChromaDB)
     sentence_transformer_ef = embedding_functions.SentenceTransformerEmbeddingFunction(
         model_name=MODEL_EMBEDDING,
         trust_remote_code=True,
@@ -158,17 +185,17 @@ def loadPDFVectorDB(databaseName,nameCollection, FolderContainingFiles):
     )
 
     try:
-        chroma_client.get_collection(name=nameCollection)
-        chroma_client.delete_collection(name=nameCollection)
+        chroma_client.get_collection(name=COLLECTION_NAME)
+        chroma_client.delete_collection(name=COLLECTION_NAME)
     except Exception as err:
         print(err)
 
-    collection = chroma_client.create_collection(name=nameCollection, embedding_function=sentence_transformer_ef, metadata={"hnsw:space": "cosine"})
+    collection = chroma_client.create_collection(name=COLLECTION_NAME, embedding_function=sentence_transformer_ef, metadata={"hnsw:space": "cosine"})
 
     queue = mp.Queue()
 
-    producer_process = mp.Process(target=producer, args=(FolderContainingFiles,QUEUE_BATCH_SIZE, queue,))
-    consumer_process = mp.Process(target=consumer, args=(True, queue, nameCollection, databaseName))
+    producer_process = mp.Process(target=producer, args=(PDF_FOLDER_PATH,QUEUE_BATCH_SIZE, queue,))
+    consumer_process = mp.Process(target=consumer, args=(True, queue, COLLECTION_NAME, PATH_ChromaDB))
 
     start_time = time.time()
 

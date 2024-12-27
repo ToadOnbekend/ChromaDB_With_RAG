@@ -3,6 +3,7 @@ from ollama import ChatResponse
 from datetime import datetime
 import ast
 
+#TODO: Bug na aanmaken VectorDB en Chatten, slaat niet op. Maar onder id=0
 
 class LLMAgent:
     model = ""
@@ -35,17 +36,30 @@ class LLMAgent:
     storage_m = ""
     current_chat_c = 0
     current_chat_name = ""
+    modulePutInChromaDB = ""
 
     def __init__(self):
         self.available_tools = {'query': self.query}
         print("LLM Agent gemaakt!")
 
-    def initialize(self, query_collection, storage_m):
+    def initialize(self, query_collection, storage_m, moduleLoad):
         self.query_collection = query_collection
         self.storage_m = storage_m
+        self.modulePutInChromaDB = moduleLoad
 
-    def SETUP(self, chat_name):
+    def SETUP(self, chat_name, createVectorDB = False):
+        folderPathPDF = "tempTestUpload"
+
         information = self.storage_m.getMessages(chat_name)
+
+        if createVectorDB:
+            self.modulePutInChromaDB.initialize(information["init_info"], folderPathPDF)
+            self.modulePutInChromaDB.loadPDFVectorDB()
+            CONFIG_SYSTEM_PROMPT = ""
+            self.storage_m.addMessage(1, self.current_chat_c,
+                                      "Wees een behulpzame AI agent die de vragen en prompts van de gebruiker aardig beantwoord.",
+                                      "None", self.getCurrentTime())
+
         print(information["messages"])
         self.setMemory(information["messages"])
         self.current_chat_c = information["id_chat"]
@@ -160,26 +174,59 @@ class LLMAgent:
     def changeDatabse(self, pathDb, collectionName):
         self.query_collection.initialize(pathDb, collectionName)
 
+    def createNewChatIndex(self, name):
+        self.current_chat_name = NAME = name
+        vectordb = "DatabaseText"
+        collections = "CollectionsD1"
+        model = "llama3.2:3b"
+        modelEMB = "NetherlandsForensicInstitute/robbert-2022-dutch-sentence-transformers"
+        modelRAN = "jinaai/jina-reranker-v2-base-multilingual"
+        embeddingDEM = 768
+        topNresults = 6
+        Nqueryresults = 25
+        chunkoverlap = 10
+
+        loadmodellocal = "True"
+        data_made = self.getCurrentTime()
+        chunksize = 65
+
+        self.current_chat_c = self.storage_m.makeNewChatIdex(NAME, vectordb, collections, model, modelEMB, modelRAN, embeddingDEM, topNresults,Nqueryresults, chunkoverlap, loadmodellocal, data_made, chunksize)
+        print("EXCE -----------------")
+
+    def makeVectorDB(self):
+        self.SETUP(self.current_chat_name, True)
+
 
 import classDatabase
 import classQuery
+import moduleLoadInChromaDB
 
 
-agent = LLMAgent()
-databasemanager = classDatabase.StorageManager("chatIndex")
-vectordb = classQuery.QueryEngine()
+
+# agent.SETUP("GoombaBase12")
 #
-agent.initialize(vectordb, databasemanager)
 
-agent.SETUP("GoombaBase12")
+if __name__ == "__main__":
+    agent = LLMAgent()
+    databasemanager = classDatabase.StorageManager("chatIndex")
+    vectordb = classQuery.QueryEngine()
+    #
+    agent.initialize(vectordb, databasemanager, moduleLoadInChromaDB)
 
-while True:
-    prompt = input("Message: ")
-    if prompt[0] == "\\":
-        nameChat = prompt[1:]
-        agent.SETUP(nameChat)
-        print("Selected: \033[33m"+nameChat+"\033[0m")
-        continue
+    while True:
+        prompt = input("Message: ")
+        if prompt[0] == "\\":
+            nameChat = prompt[1:]
+            agent.SETUP(nameChat)
+            print("Selected: \033[33m"+nameChat+"\033[0m")
+            continue
+        elif prompt[0]=="+":
+            name = prompt[1:]
+            agent.createNewChatIndex(name)
+            agent.makeVectorDB()
+            print("Selected: \033[33m" + name + "\033[0m")
+            continue
 
-    awnser = agent.handle_input(prompt)
-    print(awnser)
+
+        awnser = agent.handle_input(prompt)
+        print(awnser)

@@ -42,12 +42,10 @@ def handle_file(data, callback = None):
     file_name = data['fileName']
     file_data = data['fileData']
 
-    # Bestand opslaan in de uploads map
     file_path = os.path.join(FOLDERPdf, file_name)
     with open(file_path, 'wb') as f:
         f.write(bytearray(file_data))
 
-    # Verstuur een bevestiging terug naar de client
     socketio.emit('upload_status', {'message': f"Bestand **{file_name}** succesvol geüpload!"})
 
 
@@ -79,7 +77,6 @@ def changeVectorDB(data):
 @socketio.on("LoadInVectorDB")
 def LoadPDF_TO_VectorDB(data):
     setName_c_d(data)
-
 
     try:
         loadPDFVectorDB(NAME_VectorDB, NAME_Collection, FOLDERPdf)
