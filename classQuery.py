@@ -1,8 +1,7 @@
 import chromadb
 from chromadb.utils import embedding_functions
 from transformers import AutoModelForSequenceClassification
-import re
-
+import pprint
 
 class QueryEngine():
     PROCESS_DEVICE = "cuda"
@@ -12,7 +11,6 @@ class QueryEngine():
     TOP_N_RESULTS = 6
     N_RESULTS_QUERY = 25
     CHUNK_OVERLAP = 10
-    OLLAMA_MODEL = "llama3.2:3b"
     LOAD_MODEL_LOCAL = True
 
     chroma_client = ""
@@ -23,20 +21,32 @@ class QueryEngine():
     def __init__(self):
         pass
 
-    def initialize(self, pathChromaDB, collectionNameV):
+    def initialize(self, information):
+
+        pp = pprint.PrettyPrinter(indent=4, underscore_numbers=True)
+        print(f"\033[34m{pp.pprint(information)}\033[0m")
         print("\033[36mInitializing...\033[0m")
-        print("SET \033[1mPathChromaDB {}\033[0m".format(pathChromaDB))
-        print("SET \033[1mCollectionNameV {}\033[0m\n".format(collectionNameV))
-        self.chroma_client = chromadb.PersistentClient(path=pathChromaDB)
+        print("SET \033[1mPathChromaDB {}\033[0m".format(information["vectordb"]))
+        print("SET \033[1mCollectionNameV {}\033[0m\n".format(information["collection"]))
+        self.chroma_client = chromadb.PersistentClient(path=information["vectordb"])
+        self.MODEL_EMBEDDING = information["modelembedding"]
+        self.RERANKER_MODEL = information["modelreranking"]
+        self.EMBEDDING_DEMENSIONS = information["embeddingdemensions"]
+        self.TOP_N_RESULTS = information["topnresults"]
+        self.N_RESULTS_QUERY = information["nqueryresults"]
+        self.CHUNK_OVERLAP = information["chunkoverlap"]
+        self.LOAD_MODEL_LOCAL = True if information["loadmodellocal"] == "True" else False
         self.sentence_transformer_ef = embedding_functions.SentenceTransformerEmbeddingFunction(
             model_name=self.MODEL_EMBEDDING, device=self.PROCESS_DEVICE, trust_remote_code=True,
             truncate_dim=self.EMBEDDING_DEMENSIONS,
             local_files_only=self.LOAD_MODEL_LOCAL)
-        self.collection = self.chroma_client.get_collection(name=collectionNameV,
+        self.collection = self.chroma_client.get_collection(name=information["collection"],
                                                             embedding_function=self.sentence_transformer_ef)
         self.model = AutoModelForSequenceClassification.from_pretrained(self.RERANKER_MODEL, torch_dtype="auto",
                                                                         trust_remote_code=True,
                                                                         local_files_only=self.LOAD_MODEL_LOCAL)
+
+
 
         self.model.to('cuda')  # ⇐ ALS op CPU, haal deze regel weg
 

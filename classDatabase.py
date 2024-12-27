@@ -1,6 +1,5 @@
+import time
 from sqlalchemy import create_engine
-from sqlalchemy import create_engine, Column, Integer, String
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import text
 from datetime import datetime
@@ -18,7 +17,10 @@ class StorageManager:
         self.Session = sessionmaker(bind=self.engine)
         self.session = self.Session()
 
-    def makeNewChatIdex(self, name_x, vectordb, collection, model, modelembedding, modelreranking, embeddingdemensions, topnresults, nqueryresults, chunkoverlap, loadmodellocal, datecreated, chunksize):
+
+    def makeNewChatIdex(self, name_x, vectordb, collection, model, modelembedding, modelreranking, embeddingdemensions, topnresults, nqueryresults, chunkoverlap, loadmodellocal, chunksize, datecreated):
+        current_id = 0
+
         self.session.execute(text("""
             INSERT INTO indexBase (name, vectordb, collection, model, modelembeding, modelreranking, embeddingdemensions, topnresults, nqueryresults, chunkoverlap, loadmodellocal, datacreated, chunksize)
             VALUES (:name_x, :vectordb, :collection, :model, :modelembedding, :modelreranking, :embeddingdemensions, :topnresults, :nqueryresults, :chunkoverlap, :loadmodellocal, :datecreated, :chunksize);
@@ -39,27 +41,55 @@ class StorageManager:
         })
 
         self.session.commit()
-        print("made")
+        result_initalization_pre = self.session.execute(text("""
+                        SELECT  id_chat
+                        FROM indexBase
+                        WHERE name = :chatName
+                        LIMIT 1;
+                    """), {
+            "chatName": name_x
+        }).fetchall()
 
-    def addMessage(self, userrole, chat,message, sources, date):
+        for result in result_initalization_pre:
+            current_id = result[0]
+
+        print("made")
+        return current_id
+
+    def getChatCollections(self):
+        chatCollections = {"name":[], "date":[], "id":[]}
+        result_initalization_pre = self.session.execute(text("""
+                                SELECT  name, id_chat, datacreated
+                                FROM indexBase
+                                ORDER BY datacreated;
+                            """)).fetchall()
+
+        for result in result_initalization_pre:
+            chatCollections["name"].append(result[0])
+            chatCollections["date"].append(result[2])
+            chatCollections["id"].append(result[1])
+
+        return chatCollections
+
+
+    def addMessage(self, userrole_ids, chat_ids,message, sources, date):
         self.session.execute(text("""
             INSERT INTO messages (id_userrole, id_chat, inhoud, recourses, datamde)
-            VALUES (:userrole, :chat, :message, :sources, :date);
+            VALUES (:userrole_id, :chat_id, :message, :sources, :date);
         """), {
-            "userrole": userrole,
-            "chat": chat,
+            "userrole_id": userrole_ids,
+            "chat_id": chat_ids,
             "message": message,
             "sources": sources,
             "date": date
         })
         self.session.commit()
-        print("made")
+        # print("made")
 
     def getMessages(self, chatName):
         message_collection = []
         sendInfo = []
         id_current_chat = 0
-
 
         result = self.session.execute(text("""
                 SELECT messages.id_chat, messages.inhoud, messages.recourses, users.id_userrole,messages.datamde
@@ -80,8 +110,6 @@ class StorageManager:
             """), {
                 "chatName": chatName
         }).fetchall()
-
-        print(result_initalization_pre)
 
         for result_initalization in result_initalization_pre:
             result_init = {
@@ -119,21 +147,22 @@ class StorageManager:
             "init_info": result_init
         }
 
-        # import pprint
-        # pp = pprint.PrettyPrinter(indent=4, underscore_numbers=True)
-        # pp.pprint(result_database)
         return result_database
 
 
 
-
-# s = StorageManager('chatIndex')
-#
 # current_time = datetime.now().isoformat()
 # print(current_time)
-# # s.makeNewChatIdex("Toad", "f2", "f4","c","c","c",4,4,4,4,"T",current_time,930)
-# s.addMessage(1,10, "\033[34mTOAD\033[0m", "Pagina 2", current_time)
-# getMessa = s.getMessages("Toad")
 
-
+# id_sf = s.makeNewChatIdex("GoombaBase12", "f", "f", "f", "f","d","f",2, 2, 2, "T", 3)
+#
+# for i in range(20):
+#     current_time = datetime.now().isoformat()
+#     s.addMessage(2, id_sf, f"Hello -- {i} --", "Toad is cool",)
+#     time.sleep(1)
+#
+#
+#         import pprint
+#         pp = pprint.PrettyPrinter(indent=4, underscore_numbers=True)
+#         pp.pprint(result_database)
 # TODO:

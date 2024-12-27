@@ -108,7 +108,7 @@ def LoadPDF_TO_VectorDB(data):
 if __name__ == '__main__':
     LLMmodele = classLLM.LLMAgent()
     VectorDB = classQuery.QueryEngine()
-    VectorDB.initialize("ChromaVectorDBTester", "Collection")
+    # VectorDB.initialize("ChromaVectorDBTester", "Collection")
     LLMmodele.initialize(
         "llama3.2:3b",
         [{

@@ -10,7 +10,7 @@ TODO Ga naar [WiFi] : http://192.168.2.69:5000/
 TODO
  */
 
-const socket = io("http://192.168.2.71:5000/", {
+const socket = io("http://192.168.2.69:5000/", {
     transports: ["websocket"], // Forceer WebSocket als transport
     secure: false,             // Zorg dat het geen HTTPS probeert
 });

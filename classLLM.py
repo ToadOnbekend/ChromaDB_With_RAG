@@ -2,10 +2,15 @@ from ollama import chat
 from ollama import ChatResponse
 import classQuery
 import ast
+import datetime
 
 
 class LLMAgent():
     model = ""
+    mappings = {"system": "1",
+                "assistant": "2",
+                "user": "3",
+                "tool": "4"} #omgeerkde van mappings-database
     memory_chat = []
     askAboutFiles_tool = {
         'type': 'function',
@@ -38,10 +43,14 @@ class LLMAgent():
         self.memory_chat = memory_chat
         self.query_collection = query_collection
 
+
         print("Initialized!")
 
     def string_to_list(self, input_string):
         return ast.literal_eval(input_string)
+
+    def getCurrentTime(self):
+        return datetime.now().isoformat()
 
     def query(self, query_questions: list, questions_user: list) -> str:
         # print(type(query_questions), ":: \033[35mTYPE\033[0m")
@@ -74,33 +83,26 @@ class LLMAgent():
 
     def handle_input(self, prompt):
         content = prompt
+        ct = self.current_chat_c
         output = ""
-
         self.memory_chat.append({'role': 'user', 'content': content})
+
         response: ChatResponse = chat(
             'llama3.2:3b',
             messages=self.memory_chat,
-            tools=[self.askAboutFiles_tool]
-        )
+            tools=[self.askAboutFiles_tool])
 
         if response.message.tool_calls:
             for tool in response.message.tool_calls:
-
                 if function_to_call := self.available_tools.get(tool.function.name):
-                    # print('Calling function:', tool.function.name)
                     print('Arguments:', tool.function.arguments)
                     output = function_to_call(**tool.function.arguments)
-                    # print('Function output:', output)
                 else:
                     pass
-                    # print('Function', tool.function.name, 'not found')
-
 
         if response.message.tool_calls:
-
             self.memory_chat.append({'role': 'tool', 'content': str(output), 'name': tool.function.name})
 
-            # print("Messages:", self.memory_chat)
             final_response = chat('llama3.2:3b', messages=self.memory_chat)
             self.memory_chat = self.remove_tool_messages(self.memory_chat)
             self.memory_chat.append({'role': 'assistant', 'content': final_response.message.content})
@@ -108,7 +110,6 @@ class LLMAgent():
 
         else:
             final_response = chat('llama3.2:3b', messages=self.memory_chat)
-
             self.memory_chat.append({'role': 'assistant', 'content': final_response.message.content})
             return final_response.message.content
 
