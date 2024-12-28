@@ -101,7 +101,7 @@ class StorageManager:
             """), {
                 "chatName": chatName
         }).fetchall()
-
+        print(result, " << \033[33m <<<<< \033[0m")
         result_initalization_pre = self.session.execute(text("""
                 SELECT name, vectordb, collection, model, modelembeding, modelreranking, embeddingdemensions, topnresults, nqueryresults, chunkoverlap, loadmodellocal, datacreated, chunksize 
                 FROM indexBase
@@ -131,6 +131,7 @@ class StorageManager:
 
         for message in result:
             id_chat = message[0]
+            print(id_chat, "\033[34m ============ \033[0m")
             content = message[1]
             recourses = message[2]
             userrole = message[3]
@@ -139,7 +140,6 @@ class StorageManager:
             message_collection.append({"role": self.mappings[str(userrole)], "content": content})
             sendInfo.append([recourses, datamde])
             id_current_chat = id_chat
-
         result_database = {
             "id_chat": id_current_chat,
             "messages": message_collection,

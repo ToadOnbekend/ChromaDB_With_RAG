@@ -25,8 +25,6 @@ if __name__ == "__main__":
                 print("Selected: \033[33m" + name + "\033[0m")
                 continue
 
-            try:
-                awnser = agent.handle_input(prompt)
-                print(awnser)
-            except:
-                print("\033[31m-- Selecteer een vectorDB\033[0m")
+            awnser = agent.handle_input(prompt)
+            print(awnser)
+

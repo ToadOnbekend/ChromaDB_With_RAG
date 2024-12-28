@@ -49,20 +49,18 @@ class LLMAgent:
 
     def SETUP(self, chat_name, createVectorDB = False):
         folderPathPDF = "tempTestUpload"
-
+        print(self.current_chat_c," id chat ----------------")
         information = self.storage_m.getMessages(chat_name)
+        print(information)
 
         if createVectorDB:
             self.modulePutInChromaDB.initialize(information["init_info"], folderPathPDF)
             self.modulePutInChromaDB.loadPDFVectorDB()
-            CONFIG_SYSTEM_PROMPT = ""
-            self.storage_m.addMessage(1, self.current_chat_c,
-                                      "Wees een behulpzame AI agent die de vragen en prompts van de gebruiker aardig beantwoord.",
-                                      "None", self.getCurrentTime())
 
         print(information["messages"])
         self.setMemory(information["messages"])
-        self.current_chat_c = information["id_chat"]
+        self.current_chat_c = d= information["id_chat"]
+        print(d,"",self.current_chat_name, "id chat ///////////////////////")
         self.current_chat_name = information["init_info"]["nameChat"]
         self.model = information["init_info"]["model"]
         self.query_collection.initialize(information["init_info"])
@@ -190,43 +188,47 @@ class LLMAgent:
         data_made = self.getCurrentTime()
         chunksize = 65
 
-        self.current_chat_c = self.storage_m.makeNewChatIdex(NAME, vectordb, collections, model, modelEMB, modelRAN, embeddingDEM, topNresults,Nqueryresults, chunkoverlap, loadmodellocal, data_made, chunksize)
+        self.current_chat_c = self.storage_m.makeNewChatIdex(NAME, vectordb, collections, model, modelEMB, modelRAN, embeddingDEM, topNresults,Nqueryresults, chunkoverlap, loadmodellocal, chunksize, data_made)
         print("EXCE -----------------")
+        print(self.current_chat_c, "\033[31m ========\033[0m")
+        self.storage_m.addMessage(1, self.current_chat_c,
+                                  "Wees een behulpzame AI agent die de vragen en prompts van de gebruiker aardig beantwoord.",
+                                  "None", self.getCurrentTime())
 
     def makeVectorDB(self):
         self.SETUP(self.current_chat_name, True)
 
 
-import classDatabase
-import classQuery
-import moduleLoadInChromaDB
+# import classDatabase
+# import classQuery
+# import moduleLoadInChromaDB
 
 
 
 # agent.SETUP("GoombaBase12")
 #
 
-if __name__ == "__main__":
-    agent = LLMAgent()
-    databasemanager = classDatabase.StorageManager("chatIndex")
-    vectordb = classQuery.QueryEngine()
-    #
-    agent.initialize(vectordb, databasemanager, moduleLoadInChromaDB)
-
-    while True:
-        prompt = input("Message: ")
-        if prompt[0] == "\\":
-            nameChat = prompt[1:]
-            agent.SETUP(nameChat)
-            print("Selected: \033[33m"+nameChat+"\033[0m")
-            continue
-        elif prompt[0]=="+":
-            name = prompt[1:]
-            agent.createNewChatIndex(name)
-            agent.makeVectorDB()
-            print("Selected: \033[33m" + name + "\033[0m")
-            continue
-
-
-        awnser = agent.handle_input(prompt)
-        print(awnser)
+# if __name__ == "__main__":
+#     agent = LLMAgent()
+#     databasemanager = classDatabase.StorageManager("chatIndex")
+#     vectordb = classQuery.QueryEngine()
+#     #
+#     agent.initialize(vectordb, databasemanager, moduleLoadInChromaDB)
+#
+#     while True:
+#         prompt = input("Message: ")
+#         if prompt[0] == "\\":
+#             nameChat = prompt[1:]
+#             agent.SETUP(nameChat)
+#             print("Selected: \033[33m"+nameChat+"\033[0m")
+#             continue
+#         elif prompt[0]=="+":
+#             name = prompt[1:]
+#             agent.createNewChatIndex(name)
+#             agent.makeVectorDB()
+#             print("Selected: \033[33m" + name + "\033[0m")
+#             continue
+#
+#
+#         awnser = agent.handle_input(prompt)
+#         print(awnser)
