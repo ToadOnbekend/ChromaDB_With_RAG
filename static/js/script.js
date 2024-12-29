@@ -47,6 +47,14 @@ function SendMsg() {
     input_user.textContent = "";
 }
 
+function userMSG(data){
+     const messagess = document.getElementById('messages');
+    const element_message_user = document.createElement('li');
+    element_message_user.classList.add('humanQuestion');
+    element_message_user.innerHTML = data
+    messagess.appendChild(element_message_user);
+
+}
 
 function UploadFiles() {
     const files = document.getElementById('fileInput').files;
@@ -80,26 +88,44 @@ function LoadInDatabase(){
 
     input_C.textContent = "";
     input_D.textContent = "";
-    socket.emit("LoadInVectorDB", {collection: collectionName, vectordb:databaseName})
+    socket.emit("LoadInVectorDB", {collection: collectionName, nameChat:databaseName})
+
+
 }
 
 
 
+function llmawnserMSG(data){
+         const messages = document.getElementById('messages');
+     const newMessage = document.createElement('li');
+     newMessage.innerHTML = marked.parse(data)
+     // Hier toepassen
 
+     newMessage.classList.add('LLMresponds');
+     messages.appendChild(newMessage);
+}
 socket.on('ReceivedRequest', (data) => {
     alert("FROM SERVER: " + data.message);
 })
 
  socket.on('AwnserLLM', (data) => {
-     const messages = document.getElementById('messages');
-     const newMessage = document.createElement('li');
-     newMessage.innerHTML = marked.parse(data.message)
-     // Hier toepassen
-
-     newMessage.classList.add('LLMresponds');
-     messages.appendChild(newMessage);
+  llmawnserMSG(data.message);
  });
 
+function getCnames(data){
+      const messages = document.getElementById('chatsL');
+         const newMessage = document.createElement('li');
+         const button = document.createElement('button')
+              button.textContent = data
+              button.addEventListener('click', () => {
+                  setVectorDB_button(data); // Roep de functie aan bij klikken
+
+              });
+
+              // newMessage.classList.add('system');
+              newMessage.appendChild(button);
+              messages.appendChild(newMessage);
+}
  socket.on('AwnserSystem', (data) => {
      const messages = document.getElementById('messages');
      const newMessage = document.createElement('li');
@@ -109,6 +135,36 @@ socket.on('ReceivedRequest', (data) => {
      newMessage.classList.add('system');
      messages.appendChild(newMessage);
  });
+
+
+
+ socket.on("getChatNames", (data) => {
+
+    for (let i = 0; i < data.chatNames.length; i++) {
+         getCnames(data.chatNames[i])
+    }
+
+ })
+
+  socket.on("LoadinComming", (data) => {
+    data = data.message
+    for (let i = 0; i < data.sendInfo.length; i++) {
+        let v = data.messages[i]
+        if (v.role == "assistant"){
+            llmawnserMSG(v.content);
+        } else if (v.role == "user") {
+            userMSG(v.content);
+        }
+
+    }
+    scrollOnNewMSG();
+
+
+ })
+
+
+
+socket.emit('goGetChatNames');
 
 
 function addQuestionMessage(){
@@ -130,12 +186,42 @@ function setVectorDB(){
     const input_D = document.getElementById('dataBaseNaming');
     const databaseName = input_D.textContent.trim();
 
-    socket.emit("ChangeVectorDBonCommand", {collection: collectionName, vectordb: databaseName})
+    socket.emit("ChangeVectorDBonCommand", { name: databaseName})
 
     input_C.textContent = "";
     input_D.textContent = "";
 }
 
+function setVectorDB_button(ch){
+    const input_C = document.getElementById('collectionNaming');
+    const collectionName = input_C.textContent.trim();
+
+    const input_D = document.getElementById('dataBaseNaming');
+    const databaseName = input_D.textContent.trim();
+    const messages = document.getElementById('messages');
+    messages.innerHTML = ''; // Verwijdert alle <li>-elementen binnen de lijst
+
+    socket.emit("ChangeVectorDBonCommand", { name: ch})
+
+    input_C.textContent = "";
+    input_D.textContent = "";
+}
 socket.on('upload_status', (data) => {
             alert("FROM SERVER: "+data.message)
 });
+
+function scrollOnNewMSG(){
+    const messagesContainer = document.getElementById('messages');
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
+
+function sideBar() {
+    const sidebar = document.getElementById('sidebar');
+    const content = document.getElementById('content');
+    const toggleButton = document.getElementById('toggleButton');
+
+
+    const isHidden = sidebar.classList.toggle('hidden');
+    content.classList.toggle('hidden', isHidden);
+    toggleButton.textContent = isHidden ? '⮞' : '⮜';
+}

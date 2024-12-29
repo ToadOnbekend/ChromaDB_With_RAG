@@ -61,7 +61,7 @@ class StorageManager:
         result_initalization_pre = self.session.execute(text("""
                                 SELECT  name, id_chat, datacreated
                                 FROM indexBase
-                                ORDER BY datacreated;
+                                ORDER BY datacreated DESC;
                             """)).fetchall()
 
         for result in result_initalization_pre:

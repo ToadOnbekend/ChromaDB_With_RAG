@@ -109,7 +109,6 @@ h1 {
     justify-content: center;
     align-items: center;
     margin-bottom: 0; /* Margin wordt niet meer gebruikt */
-    background-color: white; /* Optioneel: achtergrondkleur voor duidelijkheid */
     z-index: 99; /* Zorgt ervoor dat het boven andere elementen blijft */
     padding: 10px; /* Optioneel: padding voor een nette weergave */
 }
@@ -226,6 +225,14 @@ h1 {
 /*    !*background-color: #e7e7e7;*!*/
 /*    padding: 10px;*/
 /*}*/
+
+#sidebarText {
+    font-family: DinNext;
+    font-weight: bold;
+    position: relative;
+    font-size:50px;
+    text-align: center;
+}
 #messages {
     display: flex;
     flex-direction: column;
@@ -275,3 +282,80 @@ h1 {
 /*.send_control{*/
 /*    border:*/
 /*}*/
+
+.sidebar {
+            width: 14%;
+            background-color: #f4f4f4;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            overflow-y: hidden;
+            transition: transform 0.3s ease, width 0.3s ease;
+}
+
+.sidebar.hidden {
+           transform: translateX(-100%);
+}
+
+
+
+
+
+
+.toggle-button {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            width: 40px;
+            height: 40px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+}
+
+.sidebar #chatsL{
+
+    list-style: none;
+        padding: 10px;
+    font-family: DinNext;
+    font-weight: 300;
+
+    /*max-height: 20%;*/
+    /*overflow-y: scroll;*/
+}
+/*.sidebar #chatsL li{*/
+/*    margin-bottom: 10px;*/
+/*    border: rgba(0, 0, 0, 0) solid 1px;*/
+/*    background-color: rgba(255, 0, 0, 0.09);*/
+
+/*    padding-left: 10px;*/
+/*}*/
+.sidebar #chatsL li button {
+    margin-bottom: 10px;
+    display: block; /* Zorgt ervoor dat de knop de breedte van de lijstitem vult */
+    width: 100%; /* Breedte van de knop */
+    padding: 15px; /* Voeg wat ruimte toe binnen de knop */
+    border: none; /* Randstijl */
+    background-color: rgba(255, 0, 0, 0.09); /* Achtergrondkleur */
+    color: black; /* Tekstkleur */
+    text-align: left; /* Tekst links uitlijnen */
+    cursor: pointer;
+    font-family: DinNext;
+    font-weight: 100;
+    font-size: 17px/* Verandert de muisaanwijzer in een handje */
+}
+.sidebar #chatsL li button:hover {
+    background-color: rgba(255, 0, 0, 0.2); /* Highlight bij hover */
+    border-color: darkred; /* Donkere rand bij hover */
+}
+        /* Houd de inhoud rechts van de sidebar */
+

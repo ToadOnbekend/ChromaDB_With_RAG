@@ -3,7 +3,6 @@ from ollama import ChatResponse
 from datetime import datetime
 import ast
 
-#TODO: Bug na aanmaken VectorDB en Chatten, slaat niet op. Maar onder id=0
 
 class LLMAgent:
     model = ""
@@ -64,7 +63,7 @@ class LLMAgent:
         self.current_chat_name = information["init_info"]["nameChat"]
         self.model = information["init_info"]["model"]
         self.query_collection.initialize(information["init_info"])
-
+        return information
 
     def string_to_list(self, input_string):
         return ast.literal_eval(input_string)
@@ -172,10 +171,10 @@ class LLMAgent:
     def changeDatabse(self, pathDb, collectionName):
         self.query_collection.initialize(pathDb, collectionName)
 
-    def createNewChatIndex(self, name):
+    def createNewChatIndex(self, name, collection_name):
         self.current_chat_name = NAME = name
         vectordb = "DatabaseText"
-        collections = "CollectionsD1"
+        collections = collection_name
         model = "llama3.2:3b"
         modelEMB = "NetherlandsForensicInstitute/robbert-2022-dutch-sentence-transformers"
         modelRAN = "jinaai/jina-reranker-v2-base-multilingual"
@@ -197,6 +196,9 @@ class LLMAgent:
 
     def makeVectorDB(self):
         self.SETUP(self.current_chat_name, True)
+
+    def retriveChatCollections(self, name_chat):
+        return self.storage_m.getChatCollections()
 
 
 # import classDatabase

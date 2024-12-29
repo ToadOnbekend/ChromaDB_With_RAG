@@ -15,44 +15,48 @@
 <body>
 <!--    <h1>Upload RAG Demo</h1>-->
 
+
+
+    <div class="sidebar" id="sidebar">
+        <span id="sidebarText">Menu</span>
+        <ul id="chatsL"></ul>
+
+
+    </div>
+<button class="toggle-button" id="toggleButton" onclick="sideBar()">⮜</button>
     <div class="message_container">
-        <ul id="messages">
-
-        </ul>
+            <ul id="messages"></ul>
     </div>
+        <div class="FileNaming">
 
 
-<!--    <div class="container">-->
+                        <div class="bordered-container">
+                            <div id="collectionNaming" data-placeholder="Begin typing..." contenteditable="true"></div>
+                            <span class="border-text">Collectie naam</span>
+                        </div>
 
-    <div class="FileNaming">
+                        <div class="bordered-container">
+                            <div id="dataBaseNaming" data-placeholder="Begin typing..." contenteditable="true"> </div>
+                            <span class="border-text">Chat Name</span>
+                        </div>
 
+                        <div class="bordered-container2">
+                                     <button class="upload-button" id="selectVectorDb" onclick="setVectorDB()">Kies deze vectordb</button>
+                                     <button class="upload-button" id="uploadedFiles">Selecteer bestanden</button>
+                                     <button id="uploadButton" onclick="UploadFiles()">Upload bestanden</button>
+                                     <button id="sendLoadCommand" onclick="LoadInDatabase()">Maak vectordb</button>
 
-                    <div class="bordered-container">
-                        <div id="collectionNaming" data-placeholder="Begin typing..." contenteditable="true"></div>
-                        <span class="border-text">Collectie naam</span>
-                    </div>
+                                      <span class="border-text">Collectie naam</span>
+                        </div>
+        </div>
 
-                    <div class="bordered-container">
-                        <div id="dataBaseNaming" data-placeholder="Begin typing..." contenteditable="true"> </div>
-                        <span class="border-text">Database naam</span>
-                    </div>
+        <div class="chatInput">
+                         <input type="file" id="fileInput" multiple>
 
-                    <div class="bordered-container2">
-                                 <button class="upload-button" id="selectVectorDb" onclick="setVectorDB()">Kies deze vectordb</button>
-                                 <button class="upload-button" id="uploadedFiles">Selecteer bestanden</button>
-                                 <button id="uploadButton" onclick="UploadFiles()">Upload bestanden</button>
-                                 <button id="sendLoadCommand" onclick="LoadInDatabase()">Maak vectordb</button>
+                         <div id="messageUser" contenteditable="true"></div>
+                         <button id="sendButton" onclick="SendMsg()">Stuur</button>
+        </div>
 
-                                  <span class="border-text">Collectie naam</span>
-                    </div>
-    </div>
-
-    <div class="chatInput">
-                     <input type="file" id="fileInput" multiple>
-
-                     <div id="messageUser" contenteditable="true"></div>
-                     <button id="sendButton" onclick="SendMsg()">Stuur</button>
-    </div>
 <!--    </div>-->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
    <script src="static\\js\\script.js"></script>
