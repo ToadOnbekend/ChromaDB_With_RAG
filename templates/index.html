@@ -19,10 +19,17 @@
 
     <div class="sidebar" id="sidebar">
         <span id="sidebarText">Menu</span>
+        <div class = "controls">
+             <button id="buttonA" type="button" onclick="document.getElementById('configScreen').classList.remove('hidden') ">Niewe Chat Maken</button>
+        </div>
+
         <ul id="chatsL"></ul>
 
 
     </div>
+
+
+
 <button class="toggle-button" id="toggleButton" onclick="sideBar()">⮜</button>
     <div class="message_container">
             <ul id="messages"></ul>
@@ -52,12 +59,61 @@
 
         <div class="chatInput">
                          <input type="file" id="fileInput" multiple>
+                         <div id="msgBox">
+                             <div id="messageUser" contenteditable="true"></div>
+                             <button id="sendButton" onclick="SendMsg()">Stuur</button>
+                         </div>
 
-                         <div id="messageUser" contenteditable="true"></div>
-                         <button id="sendButton" onclick="SendMsg()">Stuur</button>
         </div>
 
-<!--    </div>-->
+    <div id="configScreen" class="config-overlay hidden">
+        <div class="config-container">
+             <div class="bordered-container2">
+                 <div class="namingElements">
+                     <input type="text" id="collectionNaming" class="namingCol" placeholder="Enter Name Of Collection">
+                     <input type="text" id="dataBaseNaming" class="namingCol" placeholder="Enter Name Of Chat">
+                 </div>
+
+                 <div class="bordered-container3">
+                     <div class="inputset">
+                         <span class="Infotext">Chat</span>
+                         <div class="dropdown-container">
+                            <input type="text" id="modelpicker1" class="modelpicker" placeholder="Select or type..." data-dropdown="dropdown1">
+                            <ul id="dropdown1" class="dropdownOptions hidden" data-picker="modelpicker1">
+
+                            </ul>
+
+                         </div>
+                     </div>
+                     <div class="inputset">
+                         <span class="Infotext">Embedding</span>
+                         <div class="dropdown-container">
+                            <input type="text" id="modelpicker2" class="modelpicker" placeholder="Select or type..." data-dropdown="dropdown2">
+                            <ul id="dropdown2" class="dropdownOptions hidden" data-picker="modelpicker2">
+
+                            </ul>
+
+                         </div>
+                     </div>
+                     <div class="inputset">
+                         <span class="Infotext">Rerank</span>
+                         <div class="dropdown-container">
+                            <input type="text" id="modelpicker3" class="modelpicker" placeholder="Select or type..." data-dropdown="dropdown3">
+                            <ul id="dropdown3" class="dropdownOptions hidden" data-picker="modelpicker3">
+
+                            </ul>
+
+                         </div>
+                     </div>
+                     <span class="border-textModel">Model Configuration</span>
+                 </div>
+                 <div class="bordered-container3"><span class="border-textModel">Opdracht Prompt</span></div>
+
+
+            <span class="border-textConfig">Configuration</span>
+        </div>
+    </div>
+</div>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
    <script src="static\\js\\script.js"></script>
 </body>

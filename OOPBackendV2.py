@@ -50,16 +50,7 @@ def handle_file(data, callback = None):
     with open(file_path, 'wb') as f:
         f.write(bytearray(file_data))
 
-
     socketio.emit('AwnserSystem', {'message': f"Bestand **{file_name}** succesvol geüpload!"})
-
-
-# def setName_c_d(data):
-#     global NAME_VectorDB, NAME_Collection
-#     print("HIER -------------\n HIER\n----------")
-#     NAME_Collection = data["collection"]
-#     NAME_VectorDB = data["vectordb"]
-#     socketio.emit('AwnserSystem', {"message": f"\nChanged database name to {NAME_VectorDB}\nChanged collection name to {NAME_Collection}  "})
 
 def remove_files():
     try:
@@ -80,9 +71,6 @@ def changeVectorDB(data):
 
 @socketio.on("LoadInVectorDB")
 def LoadPDF_TO_VectorDB(data):
-    # setName_c_d(data)
-
-
     try:
         agent.createNewChatIndex(data["nameChat"], data["collection"])
         agent.makeVectorDB()
@@ -99,7 +87,7 @@ def LoadPDF_TO_VectorDB(data):
 def GetChatNames():
     chat_names = agent.retriveChatCollections("")
     print(chat_names)
-    socketio.emit("getChatNames", {"chatNames": chat_names["name"]})
+    socketio.emit("getChatNames", {"chatNames": chat_names["name"], "models": chat_names["model"],"collections": chat_names["collection"], "modelr":chat_names["modelreranking"], "modele": chat_names["modelembeding"]})
 
 if __name__ == '__main__':
     agent = classLLMv2.LLMAgent()

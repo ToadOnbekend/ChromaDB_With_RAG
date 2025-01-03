@@ -3,6 +3,8 @@ from ollama import ChatResponse
 from datetime import datetime
 import ast
 
+from torch.cuda import device
+
 
 class LLMAgent:
     model = ""
@@ -10,7 +12,7 @@ class LLMAgent:
                 "assistant": "2",
                 "user": "3",
                 "tool": "4"} #omgeerkde van mappings-database
-    use_tool = True
+    use_tool = False
     memory_chat = []
     askAboutFiles_tool = {
         'type': 'function',
@@ -122,7 +124,7 @@ class LLMAgent:
                 response: ChatResponse = chat(
                     self.model,
                     messages=self.memory_chat,
-                    tools=[self.askAboutFiles_tool])
+                    tools=[self.askAboutFiles_tool], device = "cuda")
 
                 if response.message.tool_calls:
                     for tool in response.message.tool_calls:
@@ -171,7 +173,7 @@ class LLMAgent:
     def changeDatabse(self, pathDb, collectionName):
         self.query_collection.initialize(pathDb, collectionName)
 
-    def createNewChatIndex(self, name, collection_name):
+    def createNewChatIndex(self, name, collection_name, instructions = "Wees een behulpzame AI agent die de vragen en prompts van de gebruiker aardig beantwoord."):
         self.current_chat_name = NAME = name
         vectordb = "DatabaseText"
         collections = collection_name
@@ -191,7 +193,7 @@ class LLMAgent:
         print("EXCE -----------------")
         print(self.current_chat_c, "\033[31m ========\033[0m")
         self.storage_m.addMessage(1, self.current_chat_c,
-                                  "Wees een behulpzame AI agent die de vragen en prompts van de gebruiker aardig beantwoord.",
+                                  instructions,
                                   "None", self.getCurrentTime())
 
     def makeVectorDB(self):

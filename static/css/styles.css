@@ -88,16 +88,16 @@ h1 {
 
 /*}*/
 .chatInput {
-    position: absolute; /* Zorgt ervoor dat het relatief is aan de dichtstbijzijnde gepositioneerde ouder */
+    position: absolute;
     bottom: 0; /* Plaatst het element aan de onderkant van de pagina */
     width: 100%; /* Laat het de volledige breedte innemen */
     display: flex;
     justify-content: center;
     align-items: center;
-    /*background-color: white; !* Optioneel: achtergrondkleur *!*/
-    /*box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); !* Optioneel: subtiele schaduw *!*/
-    z-index: 100; /* Zorg ervoor dat het boven andere elementen blijft */
+
+    z-index: 100;
     padding: 10px;
+
 }
 
 
@@ -160,26 +160,35 @@ h1 {
     font-family: DinNext;
     font-weight: 100;
     display: flex;
-    align-items: center;
 }
-#collectionNaming, #dataBaseNaming{
-    padding-top: 8px;
+.namingCol{
+    border: #000000 1px solid;
     padding-left: 8px;
     display: block;
     white-space: nowrap;
-    background-color: #a8a8a8;
     color: black;
     outline: none;
-    font-size:16px;
+    font-size:18px;
     overflow: hidden;
     height: 30px;
 
     font-family: DinNext;
     font-weight: 100;
-
-
+    width: 35%;
 }
 
+.namingCol::placeholder {
+    color: rgba(255, 0, 0, 0.26); /* Maak de tekst lichter */
+    font-style: italic; /* Geef het een cursieve stijl */
+    font-size: 18px; /* Pas de grootte aan */
+}
+
+#msgBox{
+    align-items: center;
+    width: 100%;
+    display: flex;
+     justify-content: center;
+}
 
 .bordered-container {
     padding: 13px;
@@ -187,14 +196,27 @@ h1 {
     border: 2px solid black;
     min-width: 13%;
     max-width: 13%;
-    min-height: 50px;
+    /*min-height: ;*/
 }
 .bordered-container2 {
        padding: 13px;
     position: relative;
     border: 2px solid black;
     margin-left: 10px;
-    min-height: 50px;
+    padding-top: 40px;
+    /*min-height: 50px;*/
+}
+.bordered-container3 {
+
+    margin-top: 30px;
+       padding: 4px;
+    position: relative;
+    border-top: 2px solid black;
+    margin-left: 10px;
+    padding-top: 15px;
+    /*justify-content: center;*/
+    align-items: center;
+    /*min-height: 50px;*/
 }
 .border-text {
     position: absolute;
@@ -208,9 +230,32 @@ h1 {
     font-weight: 700;
 }
 
+.border-textModel {
+    position: absolute;
+    top: -19px; /* Plaats de tekst in de rand */
+    left: 5%; /* Horizontaal centreren */
+    background: white; /* Zorg dat de tekst een achtergrond heeft */
+    padding: 0 10px; /* Ruimte rond de tekst */
+    font-size:26px;
+    color: black;
+    font-family: DinNext;
+    font-weight: 100;
+}
+.border-textConfig {
+    position: absolute;
+    top: -31px; /* Plaats de tekst in de rand */
+    left: 2%; /* Horizontaal centreren */
+    background: white; /* Zorg dat de tekst een achtergrond heeft */
+    padding: 0 10px; /* Ruimte rond de tekst */
+    font-size:44px;
+    color: black;
+    font-family: DinNext;
+    font-weight: 700;
+}
+
 .message_container{
-    min-height: 85%;
-    max-height: 85%;
+    min-height: 90%;
+    max-height: 90%;
     display: flex;
     justify-content: center;
     /*align-items: center ;*/
@@ -230,8 +275,9 @@ h1 {
     font-family: DinNext;
     font-weight: bold;
     position: relative;
-    font-size:50px;
-    text-align: center;
+    margin-top: 12px;
+    font-size:60px;
+
 }
 #messages {
     display: flex;
@@ -290,14 +336,15 @@ h1 {
             position: fixed;
             left: 0;
             top: 0;
-
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+text-align: center;
+            /*box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);*/
             overflow-y: hidden;
             transition: transform 0.3s ease, width 0.3s ease;
 }
 
 .sidebar.hidden {
            transform: translateX(-100%);
+
 }
 
 
@@ -328,6 +375,8 @@ h1 {
         padding: 10px;
     font-family: DinNext;
     font-weight: 300;
+    margin-left: 10px;
+    margin-right: 10px;
 
     /*max-height: 20%;*/
     /*overflow-y: scroll;*/
@@ -354,8 +403,153 @@ h1 {
     font-size: 17px/* Verandert de muisaanwijzer in een handje */
 }
 .sidebar #chatsL li button:hover {
-    background-color: rgba(255, 0, 0, 0.2); /* Highlight bij hover */
-    border-color: darkred; /* Donkere rand bij hover */
-}
-        /* Houd de inhoud rechts van de sidebar */
+    background-color: rgba(255, 0, 0, 0.2);
+    border: 1px solid red;
 
+    /*TODO Zorg voor padding, niet consistent */
+    padding:14px;
+}
+
+.controls {
+  border-top: #000000 solid 1px;
+    border-bottom: #000000 solid 1px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-top: 20px;
+
+}
+
+#buttonA{
+    width: 100%;
+    border: #6600ff solid 1px;
+    height: 45px;
+    font-family: DinNext;
+    font-weight: 500;
+    font-size: 20px;
+
+    background-color: rgba(0, 4, 255, 0.09);;
+}
+#buttonA:hover{
+    background-color: rgba(0, 4, 255, 0.2);
+
+
+}
+
+/* Overlay voor configuratiescherm */
+.config-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+/* Container voor configuratie-inhoud */
+.config-container {
+    width: 50%;
+    height: 50%;
+
+}
+
+/* Verbergen van de overlay */
+.hidden {
+    display: none;
+}
+.collectionINP{
+     outline: none;
+}
+
+.namingElements{
+   /*border: red solid 1px;*/
+    display: flex;
+    gap: 10px;
+}
+
+#chatName{
+    border: #000000 1px solid;
+}
+
+.modelpicker {
+
+    border: none;
+    outline: none;
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+    border-left: 3px solid #ff0000;
+    background-color: #e0e0e0;
+    font-family: DinNext;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.modelpicker:hover, .modelpicker:focus {
+    background-color: rgba(255, 0, 0, 0.2);
+/*    Make it take 2 seconds for background color animation*/
+    transition: background-color 0.2s;
+}
+
+.dropdown-container {
+    width: 86%;
+
+    position: relative; /* Maakt de dropdown absoluut ten opzichte van deze container */
+     /* Breedteselectie voor de container en input */
+}
+
+
+.dropdownOptions {
+    position: absolute; /* Zorgt voor positionering ten opzichte van de dichtstbijzijnde positionerende ouder */
+    top: 100%; /* Plaatst de lijst direct onder de input */
+    left: 0; /* Uitlijnen met de linkerzijde van de container */
+    /*width: calc(80% - 3px); !* Zorgt dat de dropdown even breed is als de input *!*/
+    background: #fff;
+    width: 100%;
+    border-left: 3px solid rgb(0, 188, 255);
+    max-height: 150px;
+    overflow-y: auto;
+    list-style: none;
+    margin: 0; /* Verwijder standaard marge */
+    padding: 0; /* Verwijder standaard padding */
+    z-index: 1000; /* Zorg dat het boven andere elementen verschijnt */
+
+}
+
+
+.dropdownOptions li {
+    padding: 8px;
+    cursor: pointer;
+    font-family: DinNext;
+    font-size: 18px;
+    font-weight: 100;
+    border-bottom: 1px solid #000000;
+}
+
+.dropdownOptions li:hover {
+    background: #f0f0f0;
+}
+
+/* Verberg de opties standaard */
+.hidden {
+    display: none;
+}
+
+.Infotext{
+    font-family: DinNext;
+    font-weight: 500;
+    font-size: 20px;
+
+
+}
+.inputset{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}

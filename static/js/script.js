@@ -10,6 +10,12 @@ TODO Ga naar [WiFi] : http://192.168.2.69:5000/
 TODO
  */
 
+current_chat = "D99F1A1A-1D1A-4D1A-9D1A-1D1A1D1A1D1A"
+addedmodel= []
+addedmodelR = []
+addedmodelE = []
+collections = []
+
 const socket = io("http://192.168.2.69:5000/", {
     transports: ["websocket"], // Forceer WebSocket als transport
     secure: false,             // Zorg dat het geen HTTPS probeert
@@ -112,13 +118,13 @@ socket.on('ReceivedRequest', (data) => {
   llmawnserMSG(data.message);
  });
 
-function getCnames(data){
+function getCnames(data,idE){
       const messages = document.getElementById('chatsL');
          const newMessage = document.createElement('li');
          const button = document.createElement('button')
               button.textContent = data
               button.addEventListener('click', () => {
-                  setVectorDB_button(data); // Roep de functie aan bij klikken
+                  setVectorDB_button(data,idE); // Roep de functie aan bij klikken
 
               });
 
@@ -126,6 +132,8 @@ function getCnames(data){
               newMessage.appendChild(button);
               messages.appendChild(newMessage);
 }
+
+
  socket.on('AwnserSystem', (data) => {
      const messages = document.getElementById('messages');
      const newMessage = document.createElement('li');
@@ -142,6 +150,26 @@ function getCnames(data){
 
     for (let i = 0; i < data.chatNames.length; i++) {
          getCnames(data.chatNames[i])
+
+         m = data.models[i]
+         if (!addedmodel.includes(m)){
+             addedmodel.push(m)
+             addOptionToDropdown(m, "dropdown1");
+
+
+         }
+         v = data.modele[i]
+         if (!addedmodelE.includes(v)){
+             addedmodelE.push(v)
+             addOptionToDropdown(v, "dropdown2");
+         }
+         r = data.modelr[i]
+            if (!addedmodelR.includes(r)){
+                addedmodelR.push(r)
+                addOptionToDropdown(r, "dropdown3");
+            }
+
+
     }
 
  })
@@ -193,18 +221,20 @@ function setVectorDB(){
 }
 
 function setVectorDB_button(ch){
-    const input_C = document.getElementById('collectionNaming');
-    const collectionName = input_C.textContent.trim();
+    if (ch != current_chat) {
+        const input_C = document.getElementById('collectionNaming');
+        const collectionName = input_C.textContent.trim();
 
-    const input_D = document.getElementById('dataBaseNaming');
-    const databaseName = input_D.textContent.trim();
-    const messages = document.getElementById('messages');
-    messages.innerHTML = ''; // Verwijdert alle <li>-elementen binnen de lijst
+        const input_D = document.getElementById('dataBaseNaming');
+        const databaseName = input_D.textContent.trim();
+        const messages = document.getElementById('messages');
+        messages.innerHTML = ''; // Verwijdert alle <li>-elementen binnen de lijst
 
-    socket.emit("ChangeVectorDBonCommand", { name: ch})
-
-    input_C.textContent = "";
-    input_D.textContent = "";
+        socket.emit("ChangeVectorDBonCommand", {name: ch})
+        current_chat = ch;
+        input_C.textContent = "";
+        input_D.textContent = "";
+    }
 }
 socket.on('upload_status', (data) => {
             alert("FROM SERVER: "+data.message)
@@ -225,3 +255,113 @@ function sideBar() {
     content.classList.toggle('hidden', isHidden);
     toggleButton.textContent = isHidden ? '⮞' : '⮜';
 }
+
+
+// Dropdown menu
+// document.getElementById('modelpicker').addEventListener('focus', () => {
+//     document.getElementById('dropdownOptions').classList.remove('hidden');
+// });
+//
+// document.getElementById('modelpicker').addEventListener('blur', () => {
+//     setTimeout(() => { // Tijdelijke vertraging om klikken op opties mogelijk te maken
+//         document.getElementById('dropdownOptions').classList.add('hidden');
+//     }, 200);
+// });
+//
+// // Filter opties op basis van input
+// function filterOptions() {
+//     const input = document.getElementById('modelpicker').value.toLowerCase();
+//     const options = document.querySelectorAll('#dropdownOptions li');
+//     options.forEach(option => {
+//         if (option.textContent.toLowerCase().includes(input)) {
+//             option.style.display = 'block';
+//         } else {
+//             option.style.display = 'none';
+//         }
+//     });
+// }
+//
+// // Kies een optie en vul deze in het inputveld
+// function selectOption(element) {
+//     document.getElementById("modelpicker").value = element.textContent;
+//     document.getElementById('dropdownOptions').classList.add('hidden');
+// }
+
+function addOptionToDropdown(optionText, dropdownId) {
+    const dropdown = document.getElementById(dropdownId);
+    if (dropdown) {
+        const newOption = document.createElement('li');
+        newOption.textContent = optionText; // Stel de tekst van de nieuwe optie in
+        newOption.addEventListener('click', () => {
+            selectOption(newOption); // Koppel de `selectOption`-functie
+        });
+        dropdown.appendChild(newOption); // Voeg de optie toe aan de dropdown
+    } else {
+        console.error(`Dropdown met ID '${dropdownId}' niet gevonden.`);
+    }
+}
+
+ document.querySelectorAll('.modelpicker').forEach(picker => {
+        picker.addEventListener('focus', () => {
+            const dropdownId = picker.dataset.dropdown;
+            if (dropdownId) {
+                document.getElementById(dropdownId).classList.remove('hidden');
+            }
+        });
+
+        picker.addEventListener('blur', () => {
+            const dropdownId = picker.dataset.dropdown;
+            if (dropdownId) {
+                setTimeout(() => { // Tijdelijke vertraging om klikken op opties mogelijk te maken
+                    document.getElementById(dropdownId).classList.add('hidden');
+                }, 200);
+            }
+        });
+
+        picker.addEventListener('input', () => {
+            const dropdownId = picker.dataset.dropdown;
+            if (dropdownId) {
+                filterOptions(picker, dropdownId);
+            }
+        });
+    });
+
+    // Voeg event listeners toe aan dropdown opties
+document.querySelectorAll('.dropdownOptions').forEach(dropdown => {
+    dropdown.addEventListener('click', (event) => {
+        if (event.target.tagName === 'LI') {
+            selectOption(event.target);
+        }
+    });
+});
+
+// Filter opties op basis van input
+function filterOptions(inputElement, dropdownId) {
+    const input = inputElement.value.toLowerCase();
+    const options = document.querySelectorAll(`#${dropdownId} li`);
+    options.forEach(option => {
+        if (option.textContent.toLowerCase().includes(input)) {
+            option.style.display = 'block';
+        } else {
+            option.style.display = 'none';
+        }
+    });
+}
+
+// Kies een optie en vul deze in het inputveld
+function selectOption(element) {
+    const pickerId = element.closest('.dropdownOptions').dataset.picker;
+    if (pickerId) {
+        document.getElementById(pickerId).value = element.textContent;
+    }
+    element.closest('.dropdownOptions').classList.add('hidden');
+}
+
+
+
+// Dynamisch toevoegen van opties
+
+// function showModels() {
+//     const input = document.getElementById('chatName');
+//     input.setAttribute('list', 'chatNames');
+// }

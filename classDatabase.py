@@ -57,9 +57,9 @@ class StorageManager:
         return current_id
 
     def getChatCollections(self):
-        chatCollections = {"name":[], "date":[], "id":[]}
+        chatCollections = {"name":[], "date":[], "id":[], "model":[], "modelembeding":[], "modelreranking":[], "collection":[]}
         result_initalization_pre = self.session.execute(text("""
-                                SELECT  name, id_chat, datacreated
+                                SELECT  name, id_chat, datacreated,model, modelembeding, modelreranking, collection 
                                 FROM indexBase
                                 ORDER BY datacreated DESC;
                             """)).fetchall()
@@ -68,6 +68,10 @@ class StorageManager:
             chatCollections["name"].append(result[0])
             chatCollections["date"].append(result[2])
             chatCollections["id"].append(result[1])
+            chatCollections["model"].append(result[3])
+            chatCollections["modelembeding"].append(result[4])
+            chatCollections["modelreranking"].append(result[5])
+            chatCollections["collection"].append(result[6])
 
         return chatCollections
 
