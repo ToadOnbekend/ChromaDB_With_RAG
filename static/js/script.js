@@ -7,6 +7,7 @@
 TODO
 TODO Ga naar [LAN]  : http://192.168.2.71:5000/ 
 TODO Ga naar [WiFi] : http://192.168.2.69:5000/
+[192.168.2.254:5000]
 TODO
  */
 
@@ -16,26 +17,32 @@ addedmodelR = []
 addedmodelE = []
 collections = []
 
-const socket = io("http://192.168.2.69:5000/", {
+dimensions = []
+topnresults= []
+nqueryresults=[]
+chunksize = []
+chunkoverlap=[]
+
+const socket = io("192.168.2.69:5000", {
     transports: ["websocket"], // Forceer WebSocket als transport
     secure: false,             // Zorg dat het geen HTTPS probeert
 });
 
-const fileInput = document.getElementById('fileInput');
+// const fileInput = document.getElementById('fileInput');
 const customButton = document.getElementById('uploadedFiles');
 
 // Voeg een eventlistener toe aan de knop
-customButton.addEventListener('click', () => {
-  fileInput.click(); // Simuleer een klik op het verborgen input element
-});
-
-// Optioneel: Toon de geselecteerde bestandsnamen
-fileInput.addEventListener('change', () => {
-  const fileList = fileInput.files;
-  if (fileList.length > 0) {
-    alert(`Geselecteerde bestanden: ${Array.from(fileList).map(file => file.name).join(', ')}`);
-  }
-});
+// customButton.addEventListener('click', () => {
+//   fileInput.click(); // Simuleer een klik op het verborgen input element
+// });
+//
+// // Optioneel: Toon de geselecteerde bestandsnamen
+// fileInput.addEventListener('change', () => {
+//   const fileList = fileInput.files;
+//   if (fileList.length > 0) {
+//     alert(`Geselecteerde bestanden: ${Array.from(fileList).map(file => file.name).join(', ')}`);
+//   }
+// });
 
 
 function SendMsg() {
@@ -168,6 +175,32 @@ function getCnames(data,idE){
                 addedmodelR.push(r)
                 addOptionToDropdown(r, "dropdown3");
             }
+         f= data.dimensionsd[i]
+            if (!dimensions.includes(f)){
+                dimensions.push(f)
+                addOptionToDropdown(f, "dropdown4");
+            }
+         g= data.topn[i]
+            if (!topnresults.includes(g)){
+                topnresults.push(g)
+                addOptionToDropdown(g, "dropdown5");
+            }
+         h= data.nquery[i]
+            if (!nqueryresults.includes(h)){
+                nqueryresults.push(h)
+                addOptionToDropdown(h, "dropdown6");
+            }
+         c= data.chunksize[i]
+            if (!chunksize.includes(c)){
+                chunksize.push(c)
+                addOptionToDropdown(c, "dropdown7");
+            }
+            j= data.chunkoverlap[i]
+            if (!chunkoverlap.includes(j)){
+                chunkoverlap.push(j)
+                addOptionToDropdown(j, "dropdown8");
+            }
+
 
 
     }
@@ -326,7 +359,7 @@ function addOptionToDropdown(optionText, dropdownId) {
         });
     });
 
-    // Voeg event listeners toe aan dropdown opties
+
 document.querySelectorAll('.dropdownOptions').forEach(dropdown => {
     dropdown.addEventListener('click', (event) => {
         if (event.target.tagName === 'LI') {
@@ -335,7 +368,7 @@ document.querySelectorAll('.dropdownOptions').forEach(dropdown => {
     });
 });
 
-// Filter opties op basis van input
+
 function filterOptions(inputElement, dropdownId) {
     const input = inputElement.value.toLowerCase();
     const options = document.querySelectorAll(`#${dropdownId} li`);
@@ -348,7 +381,7 @@ function filterOptions(inputElement, dropdownId) {
     });
 }
 
-// Kies een optie en vul deze in het inputveld
+
 function selectOption(element) {
     const pickerId = element.closest('.dropdownOptions').dataset.picker;
     if (pickerId) {
@@ -357,11 +390,35 @@ function selectOption(element) {
     element.closest('.dropdownOptions').classList.add('hidden');
 }
 
+        const fileInput = document.getElementById('FileInput');
+        const fileList = document.getElementById('FileList');
+        const uploadedFiles = new Map();
+
+        fileInput.addEventListener('change', () => {
+            Array.from(fileInput.files).forEach(file => {
+                if (!uploadedFiles.has(file.name)) {
+                    uploadedFiles.set(file.name, file);
+                }
+            });
 
 
-// Dynamisch toevoegen van opties
+            renderFileList();
 
-// function showModels() {
-//     const input = document.getElementById('chatName');
-//     input.setAttribute('list', 'chatNames');
-// }
+            fileInput.value = '';
+        });
+
+        function renderFileList() {
+            fileList.innerHTML = '';
+            Array.from(uploadedFiles.keys()).sort().forEach(fileName => {
+                const listItem = document.createElement('li');
+                listItem.textContent = fileName;
+
+                listItem.addEventListener('click', () => {
+                    uploadedFiles.delete(fileName);
+                    renderFileList();
+                });
+
+                fileList.appendChild(listItem);
+            });
+        }
+

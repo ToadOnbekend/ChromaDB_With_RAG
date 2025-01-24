@@ -12,7 +12,7 @@ class LLMAgent:
                 "assistant": "2",
                 "user": "3",
                 "tool": "4"} #omgeerkde van mappings-database
-    use_tool = False
+    use_tool = True
     memory_chat = []
     askAboutFiles_tool = {
         'type': 'function',
@@ -124,13 +124,14 @@ class LLMAgent:
                 response: ChatResponse = chat(
                     self.model,
                     messages=self.memory_chat,
-                    tools=[self.askAboutFiles_tool], device = "cuda")
+                    tools=[self.askAboutFiles_tool])
 
                 if response.message.tool_calls:
                     for tool in response.message.tool_calls:
                         if function_to_call := self.available_tools.get(tool.function.name):
                             print('Arguments:', tool.function.arguments)
                             output = function_to_call(**tool.function.arguments)
+                            print("\033[31mOUTPUT: ", output, "\033[0m")
                         else:
                             pass
 

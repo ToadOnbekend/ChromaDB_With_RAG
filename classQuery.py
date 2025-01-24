@@ -39,12 +39,12 @@ class QueryEngine():
         self.sentence_transformer_ef = embedding_functions.SentenceTransformerEmbeddingFunction(
             model_name=self.MODEL_EMBEDDING, device=self.PROCESS_DEVICE, trust_remote_code=True,
             truncate_dim=self.EMBEDDING_DEMENSIONS,
-            local_files_only=self.LOAD_MODEL_LOCAL)
+            local_files_only=False)
         self.collection = self.chroma_client.get_collection(name=information["collection"],
                                                             embedding_function=self.sentence_transformer_ef)
         self.model = AutoModelForSequenceClassification.from_pretrained(self.RERANKER_MODEL, torch_dtype="auto",
                                                                         trust_remote_code=True,
-                                                                        local_files_only=self.LOAD_MODEL_LOCAL)
+                                                                        local_files_only=False)
 
 
 

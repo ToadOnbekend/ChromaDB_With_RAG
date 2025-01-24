@@ -58,7 +58,7 @@
         </div>
 
         <div class="chatInput">
-                         <input type="file" id="fileInput" multiple>
+<!--                         <input type="file" id="fileInput" multiple>-->
                          <div id="msgBox">
                              <div id="messageUser" contenteditable="true"></div>
                              <button id="sendButton" onclick="SendMsg()">Stuur</button>
@@ -104,10 +104,82 @@
                             </ul>
 
                          </div>
+
                      </div>
+
                      <span class="border-textModel">Model Configuration</span>
                  </div>
-                 <div class="bordered-container3"><span class="border-textModel">Opdracht Prompt</span></div>
+                 <div class="bordered-container3">
+                     <span class="border-textModel">Model Values</span>
+                      <div class="inputset">
+                         <span class="Infotext">Dimensions</span>
+                         <div class="dropdown-container">
+                            <input type="text" id="modelpicker4" class="modelpicker" placeholder="Select or type..." data-dropdown="dropdown4">
+                            <ul id="dropdown4" class="dropdownOptions hidden" data-picker="modelpicker4">
+
+                            </ul>
+
+                         </div>
+                     </div>
+                      <div class="inputset">
+                         <span class="Infotext">TopNresults</span>
+                         <div class="dropdown-container">
+                            <input type="text" id="modelpicker5" class="modelpicker" placeholder="Select or type..." data-dropdown="dropdown5">
+                            <ul id="dropdown5" class="dropdownOptions hidden" data-picker="modelpicker5">
+
+                            </ul>
+
+                         </div>
+                     </div>
+                      <div class="inputset">
+                         <span class="Infotext">NqueryResults</span>
+                         <div class="dropdown-container">
+                            <input type="text" id="modelpicker6" class="modelpicker" placeholder="Select or type..." data-dropdown="dropdown6">
+                            <ul id="dropdown6" class="dropdownOptions hidden" data-picker="modelpicker6">
+
+                            </ul>
+
+                         </div>
+
+                     </div>
+                      <div class="inputset">
+                         <span class="Infotext">Chunk size</span>
+                         <div class="dropdown-container">
+                            <input type="text" id="modelpicker7" class="modelpicker" placeholder="Select or type..." data-dropdown="dropdown7">
+                            <ul id="dropdown7" class="dropdownOptions hidden" data-picker="modelpicker7">
+
+                            </ul>
+
+                         </div>
+
+                     </div>
+                      <div class="inputset">
+                         <span class="Infotext">Chunk overlap</span>
+                         <div class="dropdown-container">
+                            <input type="text" id="modelpicker8" class="modelpicker" placeholder="Select or type..." data-dropdown="dropdown8">
+                            <ul id="dropdown8" class="dropdownOptions hidden" data-picker="modelpicker8">
+
+                            </ul>
+
+                         </div>
+
+                     </div>
+
+                 </div>
+                 <div class="bordered-container3">
+                     <span class="border-textModel">Documents PDF</span>
+                     <div class="upload-container">
+                         <label for="FileInput">Kies PDF's</label>
+                         <input type="file" id="FileInput" multiple>
+                         <ul class="file-list" id="FileList">
+
+                         </ul>
+                     </div>
+                 </div>
+                 <div class="bordered-container3">
+                     <span class="border-textModel">Instruction Prompt</span>
+                     <div id="instructPrompt" contenteditable="true" data-placeholder="Begin typing..." class="empty" spellcheck="false"></div>
+                 </div>
 
 
             <span class="border-textConfig">Configuration</span>

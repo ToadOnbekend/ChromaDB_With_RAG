@@ -57,9 +57,9 @@ class StorageManager:
         return current_id
 
     def getChatCollections(self):
-        chatCollections = {"name":[], "date":[], "id":[], "model":[], "modelembeding":[], "modelreranking":[], "collection":[]}
+        chatCollections = {"name":[], "date":[], "id":[], "model":[], "modelembeding":[], "modelreranking":[], "collection":[], "embeddingdemensions":[], "topnresults":[], "nqueryresults":[], "chunkoverlap":[], "loadmodellocal":[], "chunksize":[], "datacreated":[]}
         result_initalization_pre = self.session.execute(text("""
-                                SELECT  name, id_chat, datacreated,model, modelembeding, modelreranking, collection 
+                                SELECT  name, id_chat, datacreated,model, modelembeding, modelreranking, collection, embeddingdemensions, topnresults, nqueryresults, chunkoverlap, loadmodellocal, chunksize, datacreated 
                                 FROM indexBase
                                 ORDER BY datacreated DESC;
                             """)).fetchall()
@@ -72,6 +72,14 @@ class StorageManager:
             chatCollections["modelembeding"].append(result[4])
             chatCollections["modelreranking"].append(result[5])
             chatCollections["collection"].append(result[6])
+            chatCollections["embeddingdemensions"].append(result[7])
+            chatCollections["topnresults"].append(result[8])
+            chatCollections["nqueryresults"].append(result[9])
+
+            chatCollections["chunkoverlap"].append(result[10])
+            chatCollections["loadmodellocal"].append(result[11])
+            chatCollections["chunksize"].append(result[12])
+            chatCollections["datacreated"].append(result[13])
 
         return chatCollections
 

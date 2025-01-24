@@ -188,6 +188,7 @@ h1 {
     width: 100%;
     display: flex;
      justify-content: center;
+    background-color: #ffffff;
 }
 
 .bordered-container {
@@ -201,7 +202,7 @@ h1 {
 .bordered-container2 {
        padding: 13px;
     position: relative;
-    border: 2px solid black;
+    border: 3px solid #d70000;
     margin-left: 10px;
     padding-top: 40px;
     /*min-height: 50px;*/
@@ -245,12 +246,15 @@ h1 {
     position: absolute;
     top: -31px; /* Plaats de tekst in de rand */
     left: 2%; /* Horizontaal centreren */
-    background: white; /* Zorg dat de tekst een achtergrond heeft */
+    background: rgb(255, 255, 255); /* Zorg dat de tekst een achtergrond heeft */
     padding: 0 10px; /* Ruimte rond de tekst */
     font-size:44px;
     color: black;
+    border-left: #d70000 solid 3px;
+    border-right: #d70000 solid 3px;
     font-family: DinNext;
     font-weight: 700;
+    border-radius: 10px;
 }
 
 .message_container{
@@ -282,7 +286,8 @@ h1 {
 #messages {
     display: flex;
     flex-direction: column;
-    max-width: 33%;
+    max-width: 45%;
+    min-width: 45%; !important;
     padding: 10px;
 }
 #messages li.LLMresponds {
@@ -443,7 +448,7 @@ text-align: center;
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
+    height: 25%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -479,7 +484,7 @@ text-align: center;
 
     border: none;
     outline: none;
-    width: 100%;
+    width: 98%;
     padding: 8px;
     box-sizing: border-box;
     border-left: 3px solid #ff0000;
@@ -496,7 +501,7 @@ text-align: center;
 }
 
 .dropdown-container {
-    width: 86%;
+    width: 82%;
 
     position: relative; /* Maakt de dropdown absoluut ten opzichte van deze container */
      /* Breedteselectie voor de container en input */
@@ -547,9 +552,82 @@ text-align: center;
 
 }
 .inputset{
+    margin-left: 23px;
+  margin-right: 23px;
     display: flex;
     align-items: center;
     justify-content: space-between;;
     margin-top: 10px;
     margin-bottom: 10px;
 }
+
+/* TODO: Deze style moet ook bij de user prompt komen */
+#instructPrompt{
+    min-height: 100px;
+    max-height: 100px;
+    color: black;
+    padding: 5px;
+    margin: 6px 0;
+    margin-left: 45px;
+    outline: none;
+    white-space: pre-wrap;
+    overflow-y: auto;
+    font-family: DinNext;
+    font-weight: 100;
+    font-size: 18px;
+    background-color:#e0e0e0;
+}
+#instructPrompt:hover{
+    background-color: rgba(255, 0, 0, 0.15);
+    transition: background-color 0.2s;
+}
+
+        .upload-container {
+            margin-top: 20px;
+        }
+
+        .upload-container label {
+            cursor: pointer;
+            background-color: #ff0000;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            text-align: center;
+            margin-bottom: 15px;
+            font-family: DinNext;
+        }
+
+        .upload-container label:hover {
+           background-color: rgb(0, 157, 255);
+        }
+
+        .upload-container input[type="file"] {
+            display: none;
+        }
+
+        .file-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            margin-top: 13px;
+            border-radius: 5px;
+            max-width: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+
+        }
+
+        .file-list li {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            cursor: pointer;
+
+            border: black solid 1px;
+        }
+
+
+
+        .file-list li:hover {
+            background-color: #f8d7da;
+        }

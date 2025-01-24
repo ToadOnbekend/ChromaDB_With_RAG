@@ -87,7 +87,7 @@ def LoadPDF_TO_VectorDB(data):
 def GetChatNames():
     chat_names = agent.retriveChatCollections("")
     print(chat_names)
-    socketio.emit("getChatNames", {"chatNames": chat_names["name"], "models": chat_names["model"],"collections": chat_names["collection"], "modelr":chat_names["modelreranking"], "modele": chat_names["modelembeding"]})
+    socketio.emit("getChatNames", {"chatNames": chat_names["name"], "models": chat_names["model"],"collections": chat_names["collection"], "modelr":chat_names["modelreranking"], "modele": chat_names["modelembeding"], "dimensionsd":chat_names["embeddingdemensions"], "topn": chat_names["topnresults"], "nquery": chat_names["nqueryresults"], "chunkoverlap": chat_names["chunkoverlap"], "chunksize": chat_names["chunksize"], "datecreated": chat_names["datacreated"]})
 
 if __name__ == '__main__':
     agent = classLLMv2.LLMAgent()
