@@ -23,9 +23,10 @@ nqueryresults=[]
 chunksize = []
 chunkoverlap=[]
 
-const socket = io("192.168.2.69:5000", {
+
+const socket = io("127.0.0.1:5000", {
     transports: ["websocket"], // Forceer WebSocket als transport
-    secure: false,             // Zorg dat het geen HTTPS probeert
+    secure: false,             // Als host en WiFi: 192.168.2.69:5000
 });
 
 // const fileInput = document.getElementById('fileInput');
@@ -70,7 +71,30 @@ function userMSG(data){
 }
 
 function UploadFiles() {
-    const files = document.getElementById('fileInput').files;
+
+    const input_C = document.getElementById('collectionNaming');
+    const collectionName = input_C.value;
+    alert(collectionName)
+    const input_D = document.getElementById('dataBaseNaming');
+    const databaseName = input_D.value;
+
+    const ChatModel = document.getElementById('modelpicker1').value;
+    const EmbeddingModel = document.getElementById('modelpicker2').value;
+    const RerankModel = document.getElementById('modelpicker3').value;
+
+    const dimensions = document.getElementById('modelpicker4').value;
+    const topNresults = document.getElementById('modelpicker5').value;
+    const Nqueryresults = document.getElementById('modelpicker6').value;
+    const chunksize = document.getElementById('modelpicker7').value;
+    const chunkoverlap = document.getElementById('modelpicker8').value;
+
+    const information = {CollectionName: collectionName, DatabaseName: databaseName,chatModel:ChatModel, embeddingModel:EmbeddingModel, rerankModel:RerankModel, Dimensions:dimensions, TopNresults: topNresults, NqueryResults: Nqueryresults, Chunksize:chunksize, ChunkOverlap:chunkoverlap}
+
+
+
+
+    const files = document.getElementById('FileInputs').files;
+    alert(files)
     if (files.length === 0) {
         alert("Selecteer minstens één bestand.");
         return;
@@ -90,6 +114,10 @@ function UploadFiles() {
     }
 
     fileInput.value = '';
+    input_C.value = "";
+    input_D.value = "";
+    document.getElementById('FileList').innerHTML = '';
+    socket.emit("LoadInVectorDB", information)
 }
 
 function LoadInDatabase(){
@@ -390,33 +418,34 @@ function selectOption(element) {
     element.closest('.dropdownOptions').classList.add('hidden');
 }
 
-        const fileInput = document.getElementById('FileInput');
-        const fileList = document.getElementById('FileList');
-        const uploadedFiles = new Map();
+const fileInput = document.getElementById('FileInputs');
+const fileList = document.getElementById('FileList');
+const uploadedFiles = new Map();
 
-        fileInput.addEventListener('change', () => {
-            Array.from(fileInput.files).forEach(file => {
-                if (!uploadedFiles.has(file.name)) {
-                    uploadedFiles.set(file.name, file);
+fileInput.addEventListener('change', () => {
+    Array.from(fileInput.files).forEach(file => {
+            if (!uploadedFiles.has(file.name)) {
+                uploadedFiles.set(file.name, file);
                 }
             });
 
 
             renderFileList();
 
-            fileInput.value = '';
+
         });
 
-        function renderFileList() {
-            fileList.innerHTML = '';
+function renderFileList() {
+          fileList.innerHTML = '';
             Array.from(uploadedFiles.keys()).sort().forEach(fileName => {
                 const listItem = document.createElement('li');
                 listItem.textContent = fileName;
 
-                listItem.addEventListener('click', () => {
-                    uploadedFiles.delete(fileName);
-                    renderFileList();
-                });
+                // listItem.addEventListener('click', () => {
+                //     uploadedFiles.delete(fileName);
+                //     fileInput.value.remove(fileName);
+                //     renderFileList();
+                // });
 
                 fileList.appendChild(listItem);
             });

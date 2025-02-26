@@ -22,8 +22,7 @@ DataBase = ""
 VECTOR_DATABASE_FOLDER = "VectorDBStoreFolder"
 @app.route('/')
 def index():
-    return render_template('index.html')  # Serve the frontend
-
+    return render_template('index.html')
 
 @socketio.on('askLLM')
 def give_awnser(data):
@@ -71,6 +70,8 @@ def changeVectorDB(data):
 
 @socketio.on("LoadInVectorDB")
 def LoadPDF_TO_VectorDB(data):
+    socketio.emit("AwnserSystem",
+                      {"message": f"Data \n {data}"})
     try:
         agent.createNewChatIndex(data["nameChat"], data["collection"])
         agent.makeVectorDB()
@@ -82,6 +83,8 @@ def LoadPDF_TO_VectorDB(data):
     except:
         remove_files()
         socketio.emit("AwnserSystem", {"message": "**Failed**"})
+
+
 
 @socketio.on("goGetChatNames")
 def GetChatNames():
@@ -95,4 +98,6 @@ if __name__ == '__main__':
     vectordb = classQuery.QueryEngine()
 
     agent.initialize(vectordb, database, moduleLoadInChromaDB)
-    socketio.run(app, debug=True, allow_unsafe_werkzeug=True, host="0.0.0.0", port=5000)
+    socketio.run(app, debug=True, allow_unsafe_werkzeug=True, port=5000)
+
+#Host met: host="0.0.0.0", als nodig
