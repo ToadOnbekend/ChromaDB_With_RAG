@@ -72,17 +72,17 @@ def changeVectorDB(data):
 def LoadPDF_TO_VectorDB(data):
     socketio.emit("AwnserSystem",
                       {"message": f"Data \n {data}"})
-    try:
-        agent.createNewChatIndex(data["nameChat"], data["collection"])
+    if True:
+        agent.createNewChatIndex(data)
         agent.makeVectorDB()
         socketio.emit("AwnserSystem",
-                      {"message": f"Changed chatID and collection<br>ChatID: **{data["nameChat"]}**\nCollection"})
+                      {"message": f"Changed chatID and collection<br>ChatID: **{data["DatabaseName"]}**\nCollection"})
         remove_files()
         socketio.emit("AwnserSystem", {"message": f"**Successfully** {data}"})
 
-    except:
-        remove_files()
-        socketio.emit("AwnserSystem", {"message": "**Failed**"})
+
+        # remove_files()
+        # socketio.emit("AwnserSystem", {"message": "**Failed**"})
 
 
 

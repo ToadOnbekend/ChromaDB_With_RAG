@@ -174,21 +174,24 @@ class LLMAgent:
     def changeDatabse(self, pathDb, collectionName):
         self.query_collection.initialize(pathDb, collectionName)
 
-    def createNewChatIndex(self, name, collection_name, instructions = "Wees een behulpzame AI agent die de vragen en prompts van de gebruiker aardig beantwoord."):
-        self.current_chat_name = NAME = name
+    def createNewChatIndex(self, data, instructions = "Wees een behulpzame AI agent die de vragen en prompts van de gebruiker aardig beantwoord."):
+        # {CollectionName: collectionName, DatabaseName: databaseName, chatModel: ChatModel,
+        #  embeddingModel: EmbeddingModel, rerankModel: RerankModel, Dimensions: dimensions, TopNresults: topNresults,
+        #  NqueryResults: Nqueryresults, Chunksize: chunksize, ChunkOverlap: chunkoverlap}
+        self.current_chat_name = NAME = data["DatabaseName"]
         vectordb = "DatabaseText"
-        collections = collection_name
-        model = "llama3.2:3b"
-        modelEMB = "NetherlandsForensicInstitute/robbert-2022-dutch-sentence-transformers"
-        modelRAN = "jinaai/jina-reranker-v2-base-multilingual"
-        embeddingDEM = 768
-        topNresults = 6
-        Nqueryresults = 25
-        chunkoverlap = 10
+        collections = data["CollectionName"]
+        model = data["chatModel"]
+        modelEMB = data["embeddingModel"]
+        modelRAN = data["rerankModel"]
+        embeddingDEM = data["Dimensions"]
+        topNresults = data["TopNresults"]
+        Nqueryresults = data["NqueryResults"]
+        chunkoverlap = data["ChunkOverlap"]
 
         loadmodellocal = "True"
         data_made = self.getCurrentTime()
-        chunksize = 65
+        chunksize = data["Chunksize"]
 
         self.current_chat_c = self.storage_m.makeNewChatIdex(NAME, vectordb, collections, model, modelEMB, modelRAN, embeddingDEM, topNresults,Nqueryresults, chunkoverlap, loadmodellocal, chunksize, data_made)
         print("EXCE -----------------")

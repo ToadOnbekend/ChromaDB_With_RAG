@@ -116,6 +116,7 @@ function UploadFiles() {
     fileInput.value = '';
     input_C.value = "";
     input_D.value = "";
+    document.getElementById('configScreen').style.display = 'none';
     document.getElementById('FileList').innerHTML = '';
     socket.emit("LoadInVectorDB", information)
 }
@@ -282,6 +283,7 @@ function setVectorDB(){
 }
 
 function setVectorDB_button(ch){
+    document.getElementById('configScreen').style.display = 'none';
     if (ch != current_chat) {
         const input_C = document.getElementById('collectionNaming');
         const collectionName = input_C.textContent.trim();
