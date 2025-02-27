@@ -4,6 +4,10 @@
 // const socket = io();
 // Client-side code
 /*
+
+TODO: Verwisselen, ook ui cverstoppen, andersom. Messages legen
+
+
 TODO
 TODO Ga naar [LAN]  : http://192.168.2.71:5000/ 
 TODO Ga naar [WiFi] : http://192.168.2.69:5000/
