@@ -20,6 +20,8 @@ FOLDERPdf = "tempTestUpload"
 agent = ""
 DataBase = ""
 VECTOR_DATABASE_FOLDER = "VectorDBStoreFolder"
+file_count_exp = 1
+current_file_count = 0
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -38,9 +40,16 @@ def give_awnser(data):
     # awnserLLM = output["response"]
     # awnserLLM = "# TEST: Er si eiojwefijewrgfiwergpierughpuierghiuerhqpowekfwoekfpwoefwefiwei[fjwofijwefgperuighuieorghuioerhgiuwerhgerwiuoghwieruhguiewrhguiewrhg"
     socketio.emit('AwnserLLM', {'message': f'{awnserLLM}'})
+#
+# @socketio.on('askLLM')
+# def notice(data):
+#     socketio.emit('AwnserSystem', {'message': f"Received prompt {data['text']}"})
+
 
 @socketio.on('upload_file')
 def handle_file(data, callback = None):
+    global file_count_exp
+
     file_name = data['fileName']
     file_data = data['fileData']
 
@@ -49,7 +58,19 @@ def handle_file(data, callback = None):
     with open(file_path, 'wb') as f:
         f.write(bytearray(file_data))
 
-    socketio.emit('AwnserSystem', {'message': f"Bestand **{file_name}** succesvol geüpload!"})
+
+
+    print(file_count_exp," <<<<<< COUNT", "Required:",data["file_total"])
+    if data["file_total"] == file_count_exp:
+        print("Files loaded!")
+        file_count_exp = file_count_exp + 1
+        file_count_exp =1
+        LoadPDF_TO_VectorDB(data["information"])
+
+    else:
+        socketio.emit('AwnserSystem', {'message': f"Bestand **{file_name}** succesvol geüpload!"})
+        print("\033[31mNOT DONE\033[0m")
+        file_count_exp += 1
 
 def remove_files():
     try:
@@ -67,8 +88,9 @@ def changeVectorDB(data):
     chats = agent.SETUP(NAME_VectorDB)
     socketio.emit("AwnserSystem", {"message": f"Changed chatID and collection<br>ChatID: **{NAME_VectorDB}**\nCollection"})
     socketio.emit("LoadinComming", {"message": chats})
+    socketio.emit("AwnserSystem", {"message": f"**READY**"})
 
-@socketio.on("LoadInVectorDB")
+# @socketio.on("LoadInVectorDB")
 def LoadPDF_TO_VectorDB(data):
     socketio.emit("AwnserSystem",
                       {"message": f"Data \n {data}"})
@@ -96,8 +118,9 @@ if __name__ == '__main__':
     agent = classLLMv2.LLMAgent()
     database = classDatabase.StorageManager("chatIndex")
     vectordb = classQuery.QueryEngine()
+    agent.initialize(vectordb, database, moduleLoadInChromaDB, socketio)
 
-    agent.initialize(vectordb, database, moduleLoadInChromaDB)
     socketio.run(app, debug=True, allow_unsafe_werkzeug=True, port=5000)
+
 
 #Host met: host="0.0.0.0", als nodig

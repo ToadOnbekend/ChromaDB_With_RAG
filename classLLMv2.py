@@ -38,15 +38,17 @@ class LLMAgent:
     current_chat_c = 0
     current_chat_name = ""
     modulePutInChromaDB = ""
+    socketC = ""
 
     def __init__(self):
         self.available_tools = {'query': self.query}
         print("LLM Agent gemaakt!")
 
-    def initialize(self, query_collection, storage_m, moduleLoad):
+    def initialize(self, query_collection, storage_m, moduleLoad, so):
         self.query_collection = query_collection
         self.storage_m = storage_m
         self.modulePutInChromaDB = moduleLoad
+        self.socketC = so
 
     def SETUP(self, chat_name, createVectorDB = False):
         folderPathPDF = "tempTestUpload"
@@ -105,7 +107,11 @@ class LLMAgent:
     def mapself(self, w):
         print(self.mappings[w])
 
+    def emitStatus(self, what):
+        self.socketC.emit("AwnserSystem", {"message": f"{what}"})
+
     def handle_input(self, prompt):
+        self.emitStatus("**Thinking**")
         tempchatMsg =  {
              "userrole_ids": [],
              "current_chat_id": [],

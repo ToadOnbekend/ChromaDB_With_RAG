@@ -6,6 +6,7 @@
 /*
 
 TODO: Verwisselen, ook ui cverstoppen, andersom. Messages legen
+TODO: Optmalere manier verstoppen chat!
 
 
 TODO
@@ -60,7 +61,7 @@ function SendMsg() {
     element_message_user.classList.add('humanQuestion');
     element_message_user.innerHTML = message
     messagess.appendChild(element_message_user);
-                // Stuur de invoerwaarde naar de server
+
     socket.emit('askLLM', { text: message });
     input_user.textContent = "";
 }
@@ -104,6 +105,7 @@ function UploadFiles() {
         return;
     }
     for (const file of files) {
+
         const reader = new FileReader();
 
         // Lees het bestand als een arraybuffer of base64 string
@@ -112,6 +114,8 @@ function UploadFiles() {
                 fileName: file.name,
                 fileData: event.target.result,
                 fileType: file.type,
+                information: information,
+                file_total: files.length
             });
         };
         reader.readAsArrayBuffer(file);
@@ -120,10 +124,13 @@ function UploadFiles() {
     fileInput.value = '';
     input_C.value = "";
     input_D.value = "";
+    getCnames(databaseName)
     document.getElementById('configScreen').style.display = 'none';
     document.getElementById('FileList').innerHTML = '';
-    socket.emit("LoadInVectorDB", information)
+    // socket.emit("LoadInVectorDB", information)
+
 }
+
 
 function LoadInDatabase(){
     const input_C = document.getElementById('collectionNaming');
@@ -168,7 +175,6 @@ function getCnames(data,idE){
 
               });
 
-              // newMessage.classList.add('system');
               newMessage.appendChild(button);
               messages.appendChild(newMessage);
 }
@@ -178,7 +184,6 @@ function getCnames(data,idE){
      const messages = document.getElementById('messages');
      const newMessage = document.createElement('li');
      newMessage.innerHTML = marked.parse(data.message)
-     // Hier toepassen
 
      newMessage.classList.add('system');
      messages.appendChild(newMessage);
